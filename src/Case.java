@@ -16,20 +16,18 @@ public class Case{
 		if(this.estRecouverte()){
 			return this.lettre;
 		}
+
+		return 0; //gestion des erreurs (doit forcément retourner un truc)
 	}
 
 	public void setLettre(char let){
 		if(!(let == Ut.indexToAlpha(let))){
-			let = Ut.indexToAlpha(let);
+			this.lettre = Ut.indexToAlpha(let);
 		}
 	}
 
 	public boolean estRecouverte(){
-		boolean res = false;
-		if(/* Condition : Lettre sur la case*/){
-			res = true;
-		}
-		return res;
+		return !(this.lettre == ' ');
 	}
 
 	public String toString(){
