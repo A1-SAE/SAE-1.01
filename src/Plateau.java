@@ -20,7 +20,7 @@ public class Plateau {
         this.g = new Case[15][15];
         for(int i = 0; i < g.length; i++){
             for(int j = 0; j < g[0].length; j++){
-                g[i][j] = new Case(0);
+                g[i][j] = new Case(1);
             }
         }
 
@@ -82,7 +82,7 @@ public class Plateau {
 
     public static Case[][] fillPlateau(Case[][] g, int[][] schema){
         for(int i = 0; i < Plateau.casesSpeciales.length; i++){
-            if(g[Plateau.casesSpeciales[i][0]][Plateau.casesSpeciales[i][1]].getCouleur() == 0){
+            if(g[Plateau.casesSpeciales[i][0]][Plateau.casesSpeciales[i][1]].getCouleur() == 1){
                 g[Plateau.casesSpeciales[i][0]][Plateau.casesSpeciales[i][1]] = new Case(Plateau.casesSpeciales[i][2]);
             }
         }

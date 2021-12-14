@@ -77,16 +77,20 @@ public class MEE {
      *                   et le retourne
      */
     public int retireAleat () {
-        int nbAleatoire = (int) (Math.random() * (this.tabFreq.length));
+        boolean estRetire = false;
+        int nbAleatoire = 0;
 
-        this.retire(nbAleatoire);
+        while(!estRetire){
+            nbAleatoire = (int) (Math.random() * (this.tabFreq.length));
+            estRetire = this.retire(nbAleatoire);
+        }
         return nbAleatoire;
     }
 
     /**
      * pré-requis : 0 <= i < tabFreq.length
      * action/résultat : transfère un exemplaire de i de this vers e s’il
-     *     en existe, et retourne vrai ssi cette action a pu être effectuée
+     *     en existe,et retourne vrai ssi cette action a pu être effectuée
      */
     public boolean transfere (MEE e, int i) {
         if(this.tabFreq[i] > 0){
@@ -101,12 +105,16 @@ public class MEE {
     /** pré-requis : k >= 0
      *  action : tranfère k exemplaires choisis aléatoirement de this vers e
      *           dans la limite du contenu de this
+     *  résultat : le nombre d’exemplaires effectivement transférés
      */
-    public void transfereAleat (MEE e, int k) {
-        for(int i = 0; i < k; i++){
+    public int transfereAleat (MEE e, int k) {
+        for(int i = 1; i <= k; i++){
             int nbAleatoire = (int) (Math.random() * (this.tabFreq.length));
             if(!this.transfere(e, nbAleatoire)) i--;
+            if(this.estVide()) return i;
         }
+
+        return k;
     }
 
     /**
