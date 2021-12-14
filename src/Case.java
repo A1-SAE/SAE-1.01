@@ -21,10 +21,8 @@ public class Case{
 		return 0; //gestion des erreurs (doit forcément retourner un truc)
 	}
 
-	public void setLettre(char let){
-		if(!(let == Ut.indexToAlpha(let))){
-			this.lettre = Ut.indexToAlpha(let);
-		}
+	public void setLettre(char let){			// PEUT ETRE A MODIFIER
+		this.lettre = Ut.indexToAlpha(let);
 	}
 
 	public boolean estRecouverte(){
