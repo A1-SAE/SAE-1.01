@@ -5,6 +5,7 @@ public class Case{
 	public Case (int uneCouleur){
 		if(uneCouleur >= 1 && uneCouleur <= 5){
 			this.coul = uneCouleur;
+			this.lettre = ' ';
 		}
 	}
 

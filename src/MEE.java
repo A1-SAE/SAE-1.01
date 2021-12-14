@@ -124,11 +124,7 @@ public class MEE {
         return res;
     }
 
-
-
-
-
-        public int getNbTotEx(){
+    public int getNbTotEx(){
         return this.nbTotEx;
     }
 }
