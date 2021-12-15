@@ -20,7 +20,7 @@ public class MEE {
      *.          une copie de tab
      */
     public MEE (int[] tab){
-        this.tabFreq = new int[tab.length - 1];
+        this.tabFreq = new int[tab.length];
 
         for(int i = 0; i < tab.length; i++){
             this.tabFreq[i] = tab[i];
@@ -69,6 +69,16 @@ public class MEE {
         }
 
         return false;
+    }
+
+    public boolean retireLettre(char c){
+        char[] letters = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+        int essai = -1;
+        for(int i = 0; i < letters.length; i++){
+            if(letters[i] == c) essai = i;
+        }
+        if(essai == -1) return false;
+        return this.retire(essai);
     }
 
     /**
