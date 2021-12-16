@@ -183,10 +183,70 @@ public class Plateau {
         return true;
     }
 
-    public static void main(String[] args){
+    /**
+     * pré-requis : le placement de mot sur this à partir de la case
+     *  (numLig, numCol) dans le sens donné par sens est valide
+     * résultat : retourne le nombre de points rapportés par ce placement, le
+     *  nombre de points de chaque jeton étant donné par le tableau nbPointsJet.
+     */
+    public int nbPointsPlacement(String mot, int numLig, int numCol, char sens, int[] nbPointsJet) {
+        char[] lettres = mot.toCharArray();
+        char[] convert = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+        int res = 0;
+        int multiplyWord = 1;
+
+        int col = numCol;
+        int lig = numLig;
+        for(int i = 0; i < lettres.length; i++){
+            if(sens == 'h') col = numCol + i;
+            if(sens == 'v') lig = numLig + i;
+
+            int letterPos = 0;
+            for(int j = 0; j < convert.length; j++){
+                if(lettres[i] == convert[j]) letterPos = j;
+            }
+
+            int caseColor = this.g[lig][col].getCouleur();
+            int multiplyLetter = 1;
+            if(caseColor <= 3){
+                multiplyLetter = caseColor;
+            }else{
+                if(caseColor == 4) multiplyWord *= 2;
+                if(caseColor == 5) multiplyWord *= 3;
+            }
+
+            res += (nbPointsJet[letterPos] * multiplyLetter);
+        }
+
+        return res * multiplyWord;
+    }
+
+    /**
+     * pré-requis : le placement de mot sur this à partir de la case
+     *    (numLig, numCol) dans le sens donné par sens à l’aide des
+     *    jetons de e est valide.
+     *  action/résultat : effectue ce placement et retourne le
+     *    nombre de jetons retirés de e.
+     */
+    public int place(String mot, int numLig, int numCol, char sens, MEE e){
+        char[] lettres = mot.toCharArray();
+        int col = numCol;
+        int lig = numLig;
+
+        for(int i = 0; i < lettres.length; i++){
+            if(sens == 'h') col = numCol + i;
+            if(sens == 'v') lig = numLig + i;
+
+            
+        }
+    }
+
+        public static void main(String[] args){
         MEE tests = new MEE(new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1});
+        int[] pts = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
         Plateau p = new Plateau();
         System.out.println(p.placementValide("ABC", 7, 5, 'h', tests));
+        System.out.println(p.nbPointsPlacement("ABCDE", 7, 7, 'h', pts));
     }
 
 }
