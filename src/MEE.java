@@ -3,6 +3,9 @@ public class MEE {
                            // (fréquence) de l’élément i
     private int nbTotEx; // nombre total d’exemplaires
 
+    private static char[] letters = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+
+
     /**
      *  pré-requis : max >= 0
      *  action : crée un multi-ensemble vide dont les éléments seront
@@ -72,9 +75,8 @@ public class MEE {
     }
 
     public boolean retireLettre(char c){
-        char[] letters = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
         int essai = -1;
-        for(int i = 0; i < letters.length; i++){
+        for(int i = 0; i < MEE.letters.length; i++){
             if(letters[i] == c) essai = i;
         }
         if(essai == -1) return false;

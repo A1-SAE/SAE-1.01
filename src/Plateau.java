@@ -61,13 +61,8 @@ public class Plateau {
                         res += " " + i + " |";
                     }
                 }else{
-                    if(this.g[i][j].estRecouverte()){
-                        res += "  " + g[i][j].getLettre() + " ";
-                        if(j != this.g[0].length - 1) res += "|";
-                    }else{
-                        res += "  " + g[i][j].getCouleur() + " ";
-                        if(j != this.g[0].length - 1) res += "|";
-                    }
+                    res += "  " + g[i][j] + " ";
+                    if(j != this.g[0].length - 1) res += "|";
                 }
             }
             res += "\n";
@@ -237,16 +232,21 @@ public class Plateau {
             if(sens == 'h') col = numCol + i;
             if(sens == 'v') lig = numLig + i;
 
-            
+            this.g[lig][col].setLettre(lettres[i]);
         }
+
+
+        return -1;
     }
 
         public static void main(String[] args){
         MEE tests = new MEE(new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1});
         int[] pts = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
         Plateau p = new Plateau();
+        System.out.println(p);
         System.out.println(p.placementValide("ABC", 7, 5, 'h', tests));
-        System.out.println(p.nbPointsPlacement("ABCDE", 7, 7, 'h', pts));
+        p.place("ABC", 7, 5, 'h', tests);
+        System.out.println(p);
     }
 
 }

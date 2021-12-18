@@ -22,7 +22,7 @@ public class Case{
 	}
 
 	public void setLettre(char let){			// PEUT ETRE A MODIFIER
-		this.lettre = Ut.indexToAlpha(let);
+		this.lettre = let;
 	}
 
 	public boolean estRecouverte(){
@@ -30,6 +30,8 @@ public class Case{
 	}
 
 	public String toString(){
-		return this.coul + " " + this.lettre;
+		if(this.estRecouverte()) return String.valueOf(this.lettre);
+
+		return String.valueOf(this.coul);
 	}
 }
