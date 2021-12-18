@@ -91,6 +91,14 @@ public class Plateau {
      *     des jetons de e est valide.
      */
     public boolean placementValide(String mot, int numLig, int numCol, char sens, MEE e) {
+        /* CapeloDico */
+        char estValide = ' ';
+        do {
+            System.out.println("[CapeloDico] Le mot suivant est-t-il valide ? (oui : o, non : n) : " + mot);
+            estValide = Ut.saisirCaractere();
+        }while(!(estValide == 'o' || estValide == 'n'));
+        if(estValide == 'n') return false;
+
         char[] lettres = mot.toCharArray();
         MEE eCopy = new MEE(e);
         int col = numCol;
