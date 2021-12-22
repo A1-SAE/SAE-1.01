@@ -78,7 +78,7 @@ public class Joueur{
 	* action : simule le placement d’un mot de this
 	*/
 	public void joueMotAux(Plateau p, MEE s, int[] nbPointsJet, String mot, int numLig, int numCol, char sens) {
-
+		// Manque Plateau
 	}
 
 
@@ -91,7 +91,9 @@ public class Joueur{
 	* stratégie : appelle les méthodes estCorrectPourEchange et echangeJetonsAux
 	*/
 	public void echangeJetons(MEE sac) {
-		//
+		if(estCorrectPourEchange("A")){
+			echangeJetonsAux(sac, "A");
+		}
 	}
 
 	/** résultat : vrai ssi les caractères de mot correspondent tous à des
@@ -99,7 +101,13 @@ public class Joueur{
 	* sous-ensemble des jetons du chevalet de this
 	*/
 	public boolean estCorrectPourEchange (String mot) {
+		boolean res = false;
+		
+		if(mot.isUpperCase() /*&& contient mot dans son chevalet*/){
+			res = true;
+		}
 
+		return res;
 	}
 
 	/** pré-requis : sac peut contenir des entiers de 0 à 25 et ensJetons
@@ -108,7 +116,8 @@ public class Joueur{
 	* jetons du sac tirés aléatoirement.
 	*/
 	public void echangeJetonsAux(MEE sac, String ensJetons) {
-
+		this.chevalet.retire(/*ensJetons <-- C'est un String et nous on veut un INT dans retire()...*/);
+		sac.transfereAleat(this.chevalet, /*nbJetons de ensJetons*/);
 	}
 
 
