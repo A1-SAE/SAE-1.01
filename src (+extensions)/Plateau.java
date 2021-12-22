@@ -125,13 +125,8 @@ public class Plateau {
                         res += " " + i + " |";
                     }
                 }else{
-                    if(this.g[i][j].estRecouverte()){
-                        res += "  " + g[i][j].getLettre() + " ";
-                        if(j != this.g[0].length - 1) res += "|";
-                    }else{
-                        res += "  " + g[i][j].getCouleur() + " ";
-                        if(j != this.g[0].length - 1) res += "|";
-                    }
+                    res += "  " + g[i][j] + " ";
+                    if(j != this.g[0].length - 1) res += "|";
                 }
             }
             res += "\n";
@@ -160,43 +155,170 @@ public class Plateau {
      *     des jetons de e est valide.
      */
     public boolean placementValide(String mot, int numLig, int numCol, char sens, MEE e) {
-        char[] letters = mot.toCharArray();
-        MEE eCopy = new MEE(e);
+        /* CapeloDico */
+        char estValide = ' ';
+        do {
+            System.out.println("[CapeloDico] Le mot suivant est-t-il valide ? (oui : o, non : n) : " + mot);
+            estValide = Ut.saisirCaractere();
+        }while(!(estValide == 'o' || estValide == 'n'));
+        if(estValide == 'n') return false;
 
-        /*
-        * vérifier que mot rentre
-        * - soit la case n'existe pas (trop court) return false
-        * - soit la case est vide ou contient la bonne lettre return true à la fin
-        * - soit la case contient qqchose et ce n'est pas la bonne lettre return false
-        * */
+        char[] lettres = mot.toCharArray();
+        MEE eCopy = new MEE(e);
         int col = numCol;
         int lig = numLig;
-        for(int i = 0; i < letters.length; i++){
-            if(sens == 'v') lig = numLig + i;
-            if(sens == 'h') col = numCol + i;
+        if(sens == 'v') lig = numLig + lettres.length - 1;
+        if(sens == 'h') col = numCol + lettres.length - 1;
 
-            if(lig >= 15 || col >= 15) return false;
-
-            if(this.g[col][lig].estRecouverte() && this.g[col][lig].getLettre() != letters[i]) return false;
-            /*on va créer une list ede cases pour les lettres déjà placées qu'on ne va pas compter dans le chevalet*/
+        /* vérifie si le plateau est vide */
+        boolean estVide = true;
+        for(int i = 0; i < this.g.length; i++){
+            for(int j = 0; j < this.g[0].length; j++){
+                if(this.g[i][j].estRecouverte()) estVide = false;
+            }
         }
 
-        /*
-         * vérifier que e contient les lettres du mot
-         * - dupliquer e
-         * - enlever chaque lettre une à une, si erreur alors false
-         */
-        for(int i = 0; i < letters.length; i++){
-            if(!eCopy.retireLettre(letters[i])) return false;
+        if(estVide){
+            /*
+             * Dans le cas où le plateau est vide, la méthode placementValide doit vérifier que :
+             * — le mot proposé a au moins 2 lettres,
+             * — la zone de placement du mot (suite de cases consécutives - de la longueur du mot - à
+             * partir de la case de sa première lettre, dans le sens de placement du mot) contient la
+             * case centrale du plateau,
+             * — l’ensemble e, correspondant au chevalet du joueur proposant le mot, contient les jetons
+             * permettant de former le mot.
+             * */
+
+            /* vérifie que mot >= 2 lettres */
+            if(lettres.length < 2) return false;
+
+            /* vérifie que le placement du mot contient la case centrale */
+            if(!(numLig <= 7 && 7 <= lig && numCol <= 7 && 7 <= col)) return false;
+
+            /* vérifie que chevalet contient jetons */
+            for(int i = 0; i < lettres.length; i++){
+                if(!eCopy.retireLettre(lettres[i])) return false;
+            }
+        }else{
+            /*
+             * Dans le cas où le plateau n’est pas vide, la méthode placementValide vérifie que :
+             * — la zone de placement du mot ne dépasse pas de la grille,
+             * — cette zone n’est ni précédée ni suivie d’une case recouverte par un jeton; autrement
+             * dit, elle est précédée (respectivement suivie) du bord de la grille ou d’une case non
+             * recouverte,
+             * — cette zone contient au moins une case non recouverte par un jeton,
+             * — cette zone contient au moins une case recouverte par un jeton,
+             * — pour chaque case recouverte par un jeton de la zone de placement du mot, la lettre du
+             * jeton est la même que celle du mot à placer dans cette case,
+             * — l’ensemble e, correspondant au chevalet du joueur proposant le mot, contient les jetons
+             * (non déjà présents sur le plateau) permettant de former le mot.
+             * */
+
+            /* vérifie que le mot ne dépasse pas */
+            if(lig > 14 || col > 14) return false;
+
+            /* vérification non précédée ou suivie d'une case recouverte */
+            if((sens == 'v' && (numCol - 1 < 0 || this.g[numLig][numCol - 1].estRecouverte())) || (sens == 'h' && (numLig - 1 < 0 || this.g[numLig - 1][numCol].estRecouverte()))) return false;
+
+            /*
+             * vérifications :
+             * - contient au moins une non recouverte
+             * - une recouverte
+             * - les lettres recouvertes correspondent
+             * - le chevalet contient les lettres
+             *  */
+            int lig2 = numLig;
+            int col2 = numCol;
+            boolean contientRecouverte = false;
+            boolean contientNonRecouverte = false;
+
+            for(int i = 0; i < lettres.length; i++){
+                if(sens == 'v') lig2 = numLig + i;
+                if(sens == 'h') col2 = numCol + i;
+
+                if(this.g[lig2][col2].estRecouverte()){
+                    contientRecouverte = true;
+                    if(this.g[lig2][col2].getLettre() != lettres[i]) return false;
+                }else{
+                    contientNonRecouverte = true;
+                    if(!eCopy.retireLettre(lettres[i])) return false;
+                }
+            }
+            if(!(contientNonRecouverte && contientRecouverte)) return false;
         }
 
         return true;
     }
 
+    /**
+     * pré-requis : le placement de mot sur this à partir de la case
+     *  (numLig, numCol) dans le sens donné par sens est valide
+     * résultat : retourne le nombre de points rapportés par ce placement, le
+     *  nombre de points de chaque jeton étant donné par le tableau nbPointsJet.
+     */
+    public int nbPointsPlacement(String mot, int numLig, int numCol, char sens, int[] nbPointsJet) {
+        char[] lettres = mot.toCharArray();
+        char[] convert = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+        int res = 0;
+        int multiplyWord = 1;
+
+        int col = numCol;
+        int lig = numLig;
+        for(int i = 0; i < lettres.length; i++){
+            if(sens == 'h') col = numCol + i;
+            if(sens == 'v') lig = numLig + i;
+
+            int letterPos = 0;
+            for(int j = 0; j < convert.length; j++){
+                if(lettres[i] == convert[j]) letterPos = j;
+            }
+
+            int caseColor = this.g[lig][col].getCouleur();
+            int multiplyLetter = 1;
+            if(caseColor <= 3){
+                multiplyLetter = caseColor;
+            }else{
+                if(caseColor == 4) multiplyWord *= 2;
+                if(caseColor == 5) multiplyWord *= 3;
+            }
+
+            res += (nbPointsJet[letterPos] * multiplyLetter);
+        }
+
+        return res * multiplyWord;
+    }
+
+    /**
+     * pré-requis : le placement de mot sur this à partir de la case
+     *    (numLig, numCol) dans le sens donné par sens à l’aide des
+     *    jetons de e est valide.
+     *  action/résultat : effectue ce placement et retourne le
+     *    nombre de jetons retirés de e.
+     */
+    public int place(String mot, int numLig, int numCol, char sens, MEE e){
+        char[] lettres = mot.toCharArray();
+        int col = numCol;
+        int lig = numLig;
+
+        for(int i = 0; i < lettres.length; i++){
+            if(sens == 'h') col = numCol + i;
+            if(sens == 'v') lig = numLig + i;
+
+            this.g[lig][col].setLettre(lettres[i]);
+        }
+
+
+        return -1;
+    }
+
     public static void main(String[] args){
         MEE tests = new MEE(new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1});
+        int[] pts = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
         Plateau p = new Plateau();
-        System.out.println(p.placementValide("AABC", 0, 0, 'v', tests));
+        System.out.println(p);
+        System.out.println(p.placementValide("ABC", 7, 5, 'h', tests));
+        p.place("ABC", 7, 5, 'h', tests);
+        System.out.println(p);
     }
 
 }
