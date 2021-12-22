@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+
 public class Plateau {
     private Case[][] g; // g pour grille
     private static int[][] casesSpeciales = new int[][] {
@@ -154,14 +156,9 @@ public class Plateau {
      *     de la case (numLig, numCol) dans le sens donné par sens à l’aide
      *     des jetons de e est valide.
      */
-    public boolean placementValide(String mot, int numLig, int numCol, char sens, MEE e) {
+    public boolean placementValide(String mot, int numLig, int numCol, char sens, MEE e, Dico capeloBot) {
         /* CapeloDico */
-        char estValide = ' ';
-        do {
-            System.out.println("[CapeloDico] Le mot suivant est-t-il valide ? (oui : o, non : n) : " + mot);
-            estValide = Ut.saisirCaractere();
-        }while(!(estValide == 'o' || estValide == 'n'));
-        if(estValide == 'n') return false;
+        if(!capeloBot.existe(mot)) return false;
 
         char[] lettres = mot.toCharArray();
         MEE eCopy = new MEE(e);
@@ -311,12 +308,13 @@ public class Plateau {
         return -1;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws FileNotFoundException {
         MEE tests = new MEE(new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1});
         int[] pts = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
         Plateau p = new Plateau();
+        Dico dico = new Dico();
         System.out.println(p);
-        System.out.println(p.placementValide("ABC", 7, 5, 'h', tests));
+        System.out.println(p.placementValide("VENIR", 7, 5, 'h', tests, dico));
         p.place("ABC", 7, 5, 'h', tests);
         System.out.println(p);
     }

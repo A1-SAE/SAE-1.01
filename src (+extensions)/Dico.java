@@ -123,13 +123,13 @@ public class Dico {
         return false;
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    /*public static void main(String[] args) throws FileNotFoundException {
         Dico test = new Dico();
 
         System.out.println(test.existe("PAPIERR"));
         System.out.println(test.existe("BALADE"));
         System.out.println(test.existe("SYSTEME"));
         System.out.println(test.existe("DICTCIONNAIRE"));
-    }
+    }*/
 
 }

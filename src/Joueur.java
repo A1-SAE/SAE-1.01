@@ -25,8 +25,10 @@ public class Joueur{
 	 * résultat : le nombre de points total sur le chevalet de ce joueur
 	 * suggestion : bien relire la classe MEE !
 	 */
-	public int nbPointsChevalet(int[] nbPointJet){
-		// Pour raph
+	public int nbPointsChevalet(MEE e, int[] nbPointJet){
+		int res = 0;
+
+		// heu nan c'est la merde enfaite
 	}
 
 	/**
