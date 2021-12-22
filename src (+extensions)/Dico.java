@@ -9,10 +9,26 @@ public class Dico {
         File doc =
                 new File("dicoReference.txt");
         Scanner obj = new Scanner(doc);
+        Scanner objCount = new Scanner(doc);
+        int lines = 0;
+        while(objCount.hasNextLine()){
+            lines++;
+            objCount.nextLine();
+        }
 
+        int line = 0;
+        String loadingbar = "";
         while (obj.hasNextLine()){
+            line++;
             String mot = obj.nextLine();
-            System.out.println(mot);
+
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+
+            if(line % (lines / 10) == 0) loadingbar += "\u2588";
+            System.out.println(mot + "\n" + ((line*100)/lines) + "% " + loadingbar);
+
+
             char[] lettres = mot.toCharArray();
             Branche currentBranche = null;
 
