@@ -1,3 +1,7 @@
+/*
+* extensions : 3.1, 3.5, 3.6
+* */
+
 import java.io.FileNotFoundException;
 
 public class Plateau {
@@ -159,6 +163,7 @@ public class Plateau {
     public boolean placementValide(String mot, int numLig, int numCol, char sens, MEE e, Dico capeloBot) {
         /* CapeloDico */
         if(!capeloBot.existe(mot)) return false;
+        if(!this.motsTransversaux(mot, numLig, numCol, sens, capeloBot)) return false;
 
         char[] lettres = mot.toCharArray();
         MEE eCopy = new MEE(e);
@@ -308,6 +313,94 @@ public class Plateau {
         return -1;
     }
 
+
+
+
+
+    public boolean motsTransversaux(String mot, int numLig, int numCol, char sens, Dico capeloBot){
+        char[] lettresMot = mot.toCharArray();
+        // test dans la hauteur du mot
+        for (char value : lettresMot) {
+            char[] motTeste = new char[15];
+            int lig = numLig;
+            int col = numCol;
+            int index = 8;
+            motTeste[7] = value;
+
+            if (sens == 'h') lig = numLig + lettresMot.length;
+            if (sens == 'v') col = numCol + lettresMot.length;
+
+            while (lig <= 14 && col <= 14 && this.g[lig][col].estRecouverte()) {
+                motTeste[index] = this.g[lig][col].getLettre();
+
+                index++;
+                if (sens == 'h') lig++;
+                if (sens == 'v') col++;
+            }
+
+            index = 6;
+            if (sens == 'h') lig = numLig + lettresMot.length - 2;
+            if (sens == 'v') col = numCol + lettresMot.length - 2;
+
+            while (lig >= 0 && col >= 0 && this.g[lig][col].estRecouverte()) {
+                motTeste[index] = this.g[lig][col].getLettre();
+
+                index--;
+                if (sens == 'h') lig--;
+                if (sens == 'v') col--;
+            }
+
+            String motTeste2 = "";
+            for (char c : motTeste) {
+                motTeste2 += c;
+            }
+
+            if (!capeloBot.existe(motTeste2)) return false;
+        }
+
+        // test dans la largueur du mot
+        char[] motTeste = new char[15];
+        int lig = numLig;
+        int col = numCol;
+        int index = 8;
+        motTeste[7] = lettresMot[i];
+
+        if(sens == 'v') lig = numLig + lettresMot.length;
+        if(sens == 'h') col = numCol + lettresMot.length;
+
+        while(lig <= 14 && col <= 14 && this.g[lig][col].estRecouverte()){
+            motTeste[index] = this.g[lig][col].getLettre();
+
+            index++;
+            if(sens == 'v') lig++;
+            if(sens == 'h') col++;
+        }
+
+        index = 6;
+        if(sens == 'v') lig = numLig + lettresMot.length - 2;
+        if(sens == 'h') col = numCol + lettresMot.length - 2;
+
+        while(lig >= 0 && col >= 0 && this.g[lig][col].estRecouverte()){
+            motTeste[index] = this.g[lig][col].getLettre();
+
+            index--;
+            if(sens == 'v') lig--;
+            if(sens == 'h') col--;
+        }
+
+        String motTeste2 = "";
+        for (char c : motTeste) {
+            motTeste2 += c;
+        }
+
+        return capeloBot.existe(motTeste2);
+
+        /*
+        * modifications à apporter : multiplier par 2 longueur maxi du mot (cas où il est dans un coin)
+        * pour la largueur du mot, il faut mettre toutes les lettres, pas une seule
+        * */
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
         MEE tests = new MEE(new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1});
         int[] pts = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
@@ -315,7 +408,9 @@ public class Plateau {
         Dico dico = new Dico();
         System.out.println(p);
         System.out.println(p.placementValide("VENIR", 7, 5, 'h', tests, dico));
-        p.place("ABC", 7, 5, 'h', tests);
+        p.place("VENIR", 7, 5, 'h', tests);
+        System.out.println(p.placementValide("MANGER", 7, 7, 'v', tests, dico));
+        System.out.println(p.placementValide("AVENIR", 7, 4, 'h', tests, dico));
         System.out.println(p);
     }
 
