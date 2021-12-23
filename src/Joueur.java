@@ -25,10 +25,15 @@ public class Joueur{
 	 * résultat : le nombre de points total sur le chevalet de ce joueur
 	 * suggestion : bien relire la classe MEE !
 	 */
-	public int nbPointsChevalet(MEE e, int[] nbPointJet){
+	public int nbPointsChevalet(int[] nbPointJet){
 		int res = 0;
+		int tabFreq[] = this.chevalet.getTabFreq();
 
-		// heu nan c'est la merde enfaite
+		for(int i = 0; i < tabFreq.length; i++){
+			res += tabFreq[i] * nbPointJet[i];
+		}
+
+		return res;
 	}
 
 	/**
@@ -110,6 +115,8 @@ public class Joueur{
 		}
 
 		return res;
+
+		/* tu peux créeer une copie du MEE du joueur et enlever les lettres une à une, si ça peut pas enlever (return false) alors tu retournes faux, si on peut tout enlever de la copie alors retourne vrai */
 	}
 
 	/** pré-requis : sac peut contenir des entiers de 0 à 25 et ensJetons
@@ -128,4 +135,8 @@ public class Joueur{
 		int[] nbPointJet = new int[]{1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10};
 		//                           A  B  C  D  E  F  G  H  I  J   K  L  M  N  O  P  Q  R  S  T  U  V   W   X   Y   Z
 	}
+
+	public String getNom(){ return this.nom; }
+
+	public MEE getChevalet(){ return this.chevalet; }
 }

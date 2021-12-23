@@ -235,16 +235,22 @@ public class Plateau {
         char[] lettres = mot.toCharArray();
         int col = numCol;
         int lig = numLig;
+        int res = 0;
 
         for(int i = 0; i < lettres.length; i++){
             if(sens == 'h') col = numCol + i;
             if(sens == 'v') lig = numLig + i;
 
-            this.g[lig][col].setLettre(lettres[i]);
+            if(this.g[lig][col].getLettre() != lettres[i]){
+                this.g[lig][col].setLettre(lettres[i]);
+                e.retireLettre(lettres[i]);
+                res++;
+            }
+
         }
 
 
-        return -1;
+        return res;
     }
 
         public static void main(String[] args){

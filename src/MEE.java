@@ -147,4 +147,6 @@ public class MEE {
     public int getNbTotEx(){
         return this.nbTotEx;
     }
+
+    public int[] getTabFreq() { return this.tabFreq; }
 }
