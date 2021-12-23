@@ -111,7 +111,7 @@ public class Scrabble {
                     }
                 }
                 this.joueurs[this.numJoueur].ajouteScore(total);
-                
+
                 break;
             case 2:
                 for(int i = 0; i < this.joueurs.length; i++){
@@ -139,6 +139,17 @@ public class Scrabble {
                 }
                 gagnants[gagnants.length - 1] = this.joueurs[i];
             }
+        }
+
+        if(gagnants.length == 1){
+            System.out.println("Le gagnant est : \n- " + gagnants[0]);
+        }else{
+            String msg = "Les gagnants sont : \n";
+            for(int i = 0; i < gagnants.length; i++){
+                msg += "- " + gagnants[i];
+            }
+
+            System.out.println(msg);
         }
 
         return gagnants;
