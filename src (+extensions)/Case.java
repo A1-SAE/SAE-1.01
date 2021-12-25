@@ -1,11 +1,13 @@
 public class Case{
 	private int coul;
 	private char lettre;
+	boolean estJoker;
 
 	public Case (int uneCouleur){
 		if(uneCouleur >= 1 && uneCouleur <= 5){
 			this.coul = uneCouleur;
 			this.lettre = ' ';
+			this.estJoker = false;
 		}
 	}
 
@@ -17,8 +19,9 @@ public class Case{
 		return this.lettre;
 	}
 
-	public void setLettre(char let){			// PEUT ETRE A MODIFIER
+	public void setLettre(char let, boolean estJoker){
 		this.lettre = let;
+		this.estJoker = estJoker;
 	}
 
 	public boolean estRecouverte(){
@@ -26,8 +29,12 @@ public class Case{
 	}
 
 	public String toString(){
-		if(this.estRecouverte()) return String.valueOf(this.lettre);
+		if(this.estRecouverte()){
+			if(this.estJoker) return "*" + this.lettre;
 
-		return String.valueOf(this.coul);
+			return " " + this.lettre;
+		}
+
+		return " " + this.coul;
 	}
 }

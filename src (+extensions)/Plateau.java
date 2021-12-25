@@ -131,7 +131,7 @@ public class Plateau {
                         res += " " + i + " |";
                     }
                 }else{
-                    res += "  " + g[i][j] + " ";
+                    res += " " + g[i][j] + " ";
                     if(j != this.g[0].length - 1) res += "|";
                 }
             }
@@ -196,10 +196,15 @@ public class Plateau {
             /* vérifie que le placement du mot contient la case centrale */
             if(!(numLig <= 7 && 7 <= lig && numCol <= 7 && 7 <= col)) return false;
 
+            int jetonsManquants = 0;
             /* vérifie que chevalet contient jetons */
             for(int i = 0; i < lettres.length; i++){
-                if(!eCopy.retireLettre(lettres[i])) return false;
+                if(!eCopy.retireLettre(lettres[i])) jetonsManquants++;
             }
+            for(int i = 0; i < jetonsManquants; i++){
+                if(!eCopy.retire(26)) return false;
+            }
+
         }else{
             /*
              * Dans le cas où le plateau n’est pas vide, la méthode placementValide vérifie que :
@@ -236,6 +241,7 @@ public class Plateau {
             boolean contientRecouverte = false;
             boolean contientNonRecouverte = false;
 
+            int jetonsManquants = 0;
             for(int i = 0; i < lettres.length; i++){
                 if(sens == 'v') lig2 = numLig + i;
                 if(sens == 'h') col2 = numCol + i;
@@ -256,10 +262,14 @@ public class Plateau {
                     if(sens == 'h') lig3 -= 2;
                     if(this.g[lig3][col3].estRecouverte()) contientRecouverte = true;
 
-                    if(!eCopy.retireLettre(lettres[i])) return false;
+                    if(!eCopy.retireLettre(lettres[i])) jetonsManquants++;
                 }
             }
+
             if(!(contientNonRecouverte && contientRecouverte)) return false;
+            for(int i = 0; i < jetonsManquants; i++){
+                if(!eCopy.retire(26)) return false;
+            }
         }
 
         return true;
@@ -314,16 +324,26 @@ public class Plateau {
         char[] lettres = mot.toCharArray();
         int col = numCol;
         int lig = numLig;
+        int res = 0;
 
         for(int i = 0; i < lettres.length; i++){
             if(sens == 'h') col = numCol + i;
             if(sens == 'v') lig = numLig + i;
 
-            this.g[lig][col].setLettre(lettres[i]);
+            if(this.g[lig][col].getLettre() != lettres[i]){
+                if(!e.retireLettre(lettres[i])){
+                    e.retire(26);
+                    this.g[lig][col].setLettre(lettres[i], true);
+                }else{
+                    this.g[lig][col].setLettre(lettres[i], false);
+                }
+                res++;
+            }
+
         }
 
 
-        return -1;
+        return res;
     }
 
 
@@ -378,16 +398,17 @@ public class Plateau {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        MEE tests = new MEE(new int[] {10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10});
+        MEE tests = new MEE(new int[] {10,10,10,10,10,10,10,10,10,10,10,10,00,10,10,10,10,0,10,10,10,10,10,10,10,10,02});
+        //                              A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z  *
         int[] pts = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
         Plateau p = new Plateau();
         Dico dico = new Dico();
         System.out.println(p.placementValide("VENIR", 7, 5, 'h', tests, dico));
         p.place("VENIR", 7, 5, 'h', tests);
-        System.out.println(p.placementValide("MANGER", 7, 7, 'v', tests, dico));
-        System.out.println(p.placementValide("AVENIR", 7, 4, 'h', tests, dico));
-
+        System.out.println(p);
         System.out.println(p.placementValide("MANGER", 6, 4, 'v', tests, dico));
+        p.place("MANGER", 6, 4, 'v', tests);
+
 
 
         //System.out.println(p);
