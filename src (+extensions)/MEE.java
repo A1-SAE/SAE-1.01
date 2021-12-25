@@ -89,14 +89,19 @@ public class MEE {
      *                   et le retourne
      */
     public int retireAleat () {
-        boolean estRetire = false;
-        int nbAleatoire = 0;
-
-        while(!estRetire){
-            nbAleatoire = (int) (Math.random() * (this.tabFreq.length));
-            estRetire = this.retire(nbAleatoire);
+        int nbAleatoire = Ut.randomMinMax(0, this.nbTotEx - 1);
+        int[] values = new int[this.nbTotEx];
+        int valuesIndex = 0;
+        for(int i = 0; i < this.tabFreq.length; i++){
+            for(int j = 0; j < this.tabFreq[i]; j++){
+                values[valuesIndex] = i;
+                valuesIndex++;
+            }
         }
-        return nbAleatoire;
+
+        int res = values[nbAleatoire];
+        this.retire(res);
+        return res;
     }
 
     /**
@@ -120,10 +125,10 @@ public class MEE {
      *  résultat : le nombre d’exemplaires effectivement transférés
      */
     public int transfereAleat (MEE e, int k) {
-        for(int i = 1; i <= k; i++){
-            int nbAleatoire = (int) (Math.random() * (this.tabFreq.length));
-            if(!this.transfere(e, nbAleatoire)) i--;
+        for(int i = 0; i < k; i++){
             if(this.estVide()) return i;
+            e.ajoute(this.retireAleat());
+            /* utiliser retireAleat plutôt */
         }
 
         return k;
@@ -147,4 +152,6 @@ public class MEE {
     public int getNbTotEx(){
         return this.nbTotEx;
     }
+
+    public int[] getTabFreq() { return this.tabFreq; }
 }
