@@ -163,7 +163,6 @@ public class Plateau {
     public boolean placementValide(String mot, int numLig, int numCol, char sens, MEE e, Dico capeloBot) {
         /* CapeloDico */
         if(!capeloBot.existe(mot)) return false;
-        if(!this.motsTransversaux(mot, numLig, numCol, sens, capeloBot)) return false;
 
         char[] lettres = mot.toCharArray();
         MEE eCopy = new MEE(e);
@@ -222,6 +221,9 @@ public class Plateau {
             /* vérification non précédée ou suivie d'une case recouverte */
             if((sens == 'v' && (numCol - 1 < 0 || this.g[numLig][numCol - 1].estRecouverte())) || (sens == 'h' && (numLig - 1 < 0 || this.g[numLig - 1][numCol].estRecouverte()))) return false;
 
+            /* vérification mots transversaux */
+            if(!this.motsTransversaux(mot, numLig, numCol, sens, capeloBot)) return false;
+
             /*
              * vérifications :
              * - contient au moins une non recouverte
@@ -243,6 +245,17 @@ public class Plateau {
                     if(this.g[lig2][col2].getLettre() != lettres[i]) return false;
                 }else{
                     contientNonRecouverte = true;
+
+                    /* vérification si contient lettre à côté */
+                    int lig3 = lig2;
+                    int col3 = lig2;
+                    if(sens == 'v') col3++;
+                    if(sens == 'h') lig3++;
+                    if(this.g[lig3][col3].estRecouverte()) contientRecouverte = true;
+                    if(sens == 'v') col3 -= 2;
+                    if(sens == 'h') lig3 -= 2;
+                    if(this.g[lig3][col3].estRecouverte()) contientRecouverte = true;
+
                     if(!eCopy.retireLettre(lettres[i])) return false;
                 }
             }
@@ -318,100 +331,66 @@ public class Plateau {
 
 
     public boolean motsTransversaux(String mot, int numLig, int numCol, char sens, Dico capeloBot){
+        if (sens == 'v') numLig--;
+        if (sens == 'h') numCol--;
         char[] lettresMot = mot.toCharArray();
         // test dans la hauteur du mot
         for (char value : lettresMot) {
-            char[] motTeste = new char[15];
+            String avant = "";
+            String pendant = String.valueOf(value);
+            String apres = "";
+            if (sens == 'v') numLig++;
+            if (sens == 'h') numCol++;
             int lig = numLig;
             int col = numCol;
-            int index = 8;
-            motTeste[7] = value;
 
-            if (sens == 'h') lig = numLig + lettresMot.length;
-            if (sens == 'v') col = numCol + lettresMot.length;
+            if (sens == 'h') lig = numLig + 1;
+            if (sens == 'v') col = numCol + 1;
 
             while (lig <= 14 && col <= 14 && this.g[lig][col].estRecouverte()) {
-                motTeste[index] = this.g[lig][col].getLettre();
+                apres += this.g[lig][col].getLettre();
 
-                index++;
                 if (sens == 'h') lig++;
                 if (sens == 'v') col++;
             }
 
-            index = 6;
-            if (sens == 'h') lig = numLig + lettresMot.length - 2;
-            if (sens == 'v') col = numCol + lettresMot.length - 2;
+            if (sens == 'h') lig = numLig - 1;
+            if (sens == 'v') col = numCol -1;
 
             while (lig >= 0 && col >= 0 && this.g[lig][col].estRecouverte()) {
-                motTeste[index] = this.g[lig][col].getLettre();
+                avant += this.g[lig][col].getLettre();
 
-                index--;
                 if (sens == 'h') lig--;
                 if (sens == 'v') col--;
             }
 
-            String motTeste2 = "";
-            for (char c : motTeste) {
-                motTeste2 += c;
+            String avant2 = "";
+            char[] avantLetters = avant.toCharArray();
+            for(int i = avantLetters.length - 1; i >= 0; i--){
+                avant2 += avantLetters[i];
             }
 
-            if (!capeloBot.existe(motTeste2)) return false;
+            String motTeste = avant2 + pendant + apres;
+            if (motTeste.toCharArray().length > 1 && !capeloBot.existe(motTeste)) return false;
         }
 
-        // test dans la largueur du mot
-        char[] motTeste = new char[15];
-        int lig = numLig;
-        int col = numCol;
-        int index = 8;
-        motTeste[7] = lettresMot[i];
-
-        if(sens == 'v') lig = numLig + lettresMot.length;
-        if(sens == 'h') col = numCol + lettresMot.length;
-
-        while(lig <= 14 && col <= 14 && this.g[lig][col].estRecouverte()){
-            motTeste[index] = this.g[lig][col].getLettre();
-
-            index++;
-            if(sens == 'v') lig++;
-            if(sens == 'h') col++;
-        }
-
-        index = 6;
-        if(sens == 'v') lig = numLig + lettresMot.length - 2;
-        if(sens == 'h') col = numCol + lettresMot.length - 2;
-
-        while(lig >= 0 && col >= 0 && this.g[lig][col].estRecouverte()){
-            motTeste[index] = this.g[lig][col].getLettre();
-
-            index--;
-            if(sens == 'v') lig--;
-            if(sens == 'h') col--;
-        }
-
-        String motTeste2 = "";
-        for (char c : motTeste) {
-            motTeste2 += c;
-        }
-
-        return capeloBot.existe(motTeste2);
-
-        /*
-        * modifications à apporter : multiplier par 2 longueur maxi du mot (cas où il est dans un coin)
-        * pour la largueur du mot, il faut mettre toutes les lettres, pas une seule
-        * */
+        return true;
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        MEE tests = new MEE(new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1});
+        MEE tests = new MEE(new int[] {10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10});
         int[] pts = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
         Plateau p = new Plateau();
         Dico dico = new Dico();
-        System.out.println(p);
         System.out.println(p.placementValide("VENIR", 7, 5, 'h', tests, dico));
         p.place("VENIR", 7, 5, 'h', tests);
         System.out.println(p.placementValide("MANGER", 7, 7, 'v', tests, dico));
         System.out.println(p.placementValide("AVENIR", 7, 4, 'h', tests, dico));
-        System.out.println(p);
+
+        System.out.println(p.placementValide("MANGER", 6, 4, 'v', tests, dico));
+
+
+        //System.out.println(p);
     }
 
 }
