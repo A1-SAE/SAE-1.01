@@ -1,8 +1,15 @@
 public class tests {
     public static void main(String[] args){
-        MEE mee1 = new MEE(26);
-        MEE mee2 = new MEE(new int[] {0, 2, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+        MEE tests = new MEE(new int[] {1,1,2,1,1,1,1,1,1,1,1,1,1,50,1,1,1,1,1,1,1,1,1,1,1,1});
+        MEE testsVide = new MEE(new int[] {1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1});
+        int[] pts = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+        /*Plateau p = new Plateau();
+        System.out.println(p);
+        System.out.println(p.placementValide("ABC", 7, 5, 'h', tests));
+        p.place("ABC", 7, 5, 'h', tests);
+        System.out.println(p);*/
 
-        System.out.println(mee1.retireAleat());
+        System.out.println(tests.retireAleat());
+        System.out.println(testsVide.transfereAleat(tests, 100));
     }
 }

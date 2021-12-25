@@ -253,14 +253,5 @@ public class Plateau {
         return res;
     }
 
-        public static void main(String[] args){
-        MEE tests = new MEE(new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1});
-        int[] pts = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-        Plateau p = new Plateau();
-        System.out.println(p);
-        System.out.println(p.placementValide("ABC", 7, 5, 'h', tests));
-        p.place("ABC", 7, 5, 'h', tests);
-        System.out.println(p);
-    }
 
 }
