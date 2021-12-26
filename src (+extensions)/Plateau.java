@@ -1,12 +1,12 @@
 /*
-* extensions : 3.1, 3,3 3.5, 3.6
+* extensions : 3.1
 * */
 
 import java.io.FileNotFoundException;
 
 public class Plateau {
     private Case[][] g; // g pour grille
-    private static int[][] casesSpeciales = new int[][] {
+    private static int[][] casesSpeciales = new int[][] { // {i,j,couleur}
             {0,0,5},
             {1,1,4},
             {2,2,4},
@@ -22,6 +22,9 @@ public class Plateau {
             {3,7,2}
     };
 
+    /*
+     * action : constructeur de Plateau avec une grille vierge
+     * */
     public Plateau(){
         this.g = new Case[15][15];
         for(int i = 0; i < g.length; i++){
@@ -86,6 +89,10 @@ public class Plateau {
         fillPlateau(g, casesSpeciales);
     }
 
+    /*
+    * prérequis : 0 <= schema[x][0] <= 14 et 0 <= schema[x][1] <= 14 et 1 <= schema[x][0] <= 5 avec x <= (g.length)²
+    * action/résultat : ajoute les cases à la grille g avec les paramètres entrés dans schema et la retourne
+    * */
     public static Case[][] fillPlateau(Case[][] g, int[][] schema){
         for(int i = 0; i < Plateau.casesSpeciales.length; i++){
             if(g[Plateau.casesSpeciales[i][0]][Plateau.casesSpeciales[i][1]].getCouleur() == 1){
@@ -96,6 +103,9 @@ public class Plateau {
         return g;
     }
 
+    /*
+     * résultat : chaîne décrivant ce plateau
+     * */
     public String toString(){
         String res = "";
         for(int i = -1; i < this.g.length; i++){
@@ -161,7 +171,7 @@ public class Plateau {
      *     des jetons de e est valide.
      */
     public boolean placementValide(String mot, int numLig, int numCol, char sens, MEE e, Dico capeloBot) {
-        /* CapeloDico */
+        /* CapeloDico v2 */
         if(!capeloBot.existe(mot)) return false;
 
         char[] lettres = mot.toCharArray();
@@ -283,9 +293,10 @@ public class Plateau {
      */
     public int nbPointsPlacement(String mot, int numLig, int numCol, char sens, int[] nbPointsJet) {
         char[] lettres = mot.toCharArray();
-        char[] convert = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+        char[] convert = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '*'};
         int res = 0;
         int multiplyWord = 1;
+        int faitScrabble = 0;
 
         int col = numCol;
         int lig = numLig;
@@ -298,7 +309,8 @@ public class Plateau {
                 if(lettres[i] == convert[j]) letterPos = j;
             }
 
-            int caseColor = this.g[lig][col].getCouleur();
+            int caseColor = 1;
+            if(!this.g[lig][col].estRecouverte()) caseColor = this.g[lig][col].getCouleur();
             int multiplyLetter = 1;
             if(caseColor <= 3){
                 multiplyLetter = caseColor;
@@ -308,9 +320,73 @@ public class Plateau {
             }
 
             res += (nbPointsJet[letterPos] * multiplyLetter);
+
+            if(!this.g[lig][col].estRecouverte()) faitScrabble++;
         }
 
-        return res * multiplyWord;
+        res *= multiplyWord;
+        if(faitScrabble == 7) res += 50;
+        return res;
+    }
+
+    /*
+    * pré-requis : le placement de mot sur this à partir de la case
+    *  (numLig, numCol) dans le sens donné par sens est valide
+    * résultat : retourne le nombre de points rapportés par les mots transversaux
+    * */
+    public int nbPointsMotsTransversaux(String mot, int numLig, int numCol, char sens, int[] nbPointsJet){
+        int res = 0;
+
+        if (sens == 'v') numLig--;
+        if (sens == 'h') numCol--;
+        char[] lettresMot = mot.toCharArray();
+
+
+        for (char value : lettresMot) {
+            String avant = "";
+            String pendant = String.valueOf(value);
+            String apres = "";
+            if (sens == 'v') numLig++;
+            if (sens == 'h') numCol++;
+            int lig = numLig;
+            int col = numCol;
+
+            if (sens == 'h') lig = numLig + 1;
+            if (sens == 'v') col = numCol + 1;
+
+            while (lig <= 14 && col <= 14 && this.g[lig][col].estRecouverte()) {
+                apres += this.g[lig][col].getLettre();
+
+                if (sens == 'h') lig++;
+                if (sens == 'v') col++;
+            }
+
+            if (sens == 'h') lig = numLig - 1;
+            if (sens == 'v') col = numCol -1;
+
+            while (lig >= 0 && col >= 0 && this.g[lig][col].estRecouverte()) {
+                avant += this.g[lig][col].getLettre();
+
+                if (sens == 'h') lig--;
+                if (sens == 'v') col--;
+            }
+
+            if (sens == 'h') lig++;
+            if (sens == 'v') col++;
+
+            String avant2 = "";
+            char[] avantLetters = avant.toCharArray();
+            for(int i = avantLetters.length - 1; i >= 0; i--){
+                avant2 += avantLetters[i];
+            }
+
+            char sensMT = ' ';
+            if(sens == 'v') sensMT = 'h';
+            if(sens == 'h') sensMT = 'v';
+            res += this.nbPointsPlacement(avant2 + pendant + apres, lig, col, sensMT, nbPointsJet);
+        }
+
+        return res;
     }
 
     /**
@@ -347,9 +423,12 @@ public class Plateau {
     }
 
 
-
-
-
+    /*
+    * pré-requis : mot est un mot accepté par CapeloDico,
+    *     0 <= numLig <= 14, 0 <= numCol <= 14, sens est un élément
+    *     de {’h’,’v’} et l’entier maximum prévu pour e est au moins 25
+    * résultat : retourne vrai ssi les mots transversaux formés sont valides
+    * */
     public boolean motsTransversaux(String mot, int numLig, int numCol, char sens, Dico capeloBot){
         if (sens == 'v') numLig--;
         if (sens == 'h') numCol--;
@@ -396,22 +475,4 @@ public class Plateau {
 
         return true;
     }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        MEE tests = new MEE(new int[] {10,10,10,10,10,10,10,10,10,10,10,10,00,10,10,10,10,0,10,10,10,10,10,10,10,10,02});
-        //                              A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z  *
-        int[] pts = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-        Plateau p = new Plateau();
-        Dico dico = new Dico();
-        System.out.println(p.placementValide("VENIR", 7, 5, 'h', tests, dico));
-        p.place("VENIR", 7, 5, 'h', tests);
-        System.out.println(p);
-        System.out.println(p.placementValide("MANGER", 6, 4, 'v', tests, dico));
-        p.place("MANGER", 6, 4, 'v', tests);
-
-
-
-        //System.out.println(p);
-    }
-
 }

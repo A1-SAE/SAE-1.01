@@ -1,3 +1,13 @@
+/*
+* extensions : 3.1
+*
+* (3.1)
+* Le dictionnaire se crée en même temps que le Plateau. Celui-ci utilise un arbre
+* lexicographique.
+* Sa structure est faite de manière à pouvoir connaitre la répartition des mots le
+* long de l'arbre, ce qui nous est utile par la suite pour l'IA.
+* */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -8,6 +18,11 @@ public class Dico {
     private Branche[] debuts;
     private int nombreDeMots;
 
+
+    /*
+    * prérequis : le fichier "dicoReference.txt" existe et est à la racine do dossier
+    * action : constructeur de la classe Dico
+    * */
     public Dico() throws FileNotFoundException {
         File doc =
                 new File("dicoReference.txt");
@@ -89,6 +104,10 @@ public class Dico {
         }
     }
 
+    /*
+    * prérequis : mot est un mot formé de lettres en majuscule
+    * résultat : vrai ssi mot est un mot appartenant au dictionnaire
+    * */
     public boolean existe(String mot){
         char[] lettres = mot.toCharArray();
         Branche currentBranche = null;
@@ -128,6 +147,10 @@ public class Dico {
         return false;
     }
 
+    /*
+    * prérequis : 0 < pourcentageRecherches <= 100
+    * résultat : retourne un pourcentage de mots issus du dictionnaire
+    * */
     public String[] motsPossibles(double pourcentageRecherches){
         int motsRecherches = (int) ((pourcentageRecherches * this.nombreDeMots) / 100);
         if(motsRecherches > this.nombreDeMots) motsRecherches = this.nombreDeMots;
@@ -135,6 +158,10 @@ public class Dico {
         return this.recuperesXMots("",this.debuts, motsRecherches);
     }
 
+    /*
+    * prérequis : 0 <= lettrePrecedente.length() < 2, branchesActuelles est formé des lettres qui suivent dans le mot, 0 < nombreDeMotsSouhaites <= this.nombreDeMots
+    * résultat : retourne une liste de mots complets ou incomplets (en fonction du stade de la recherche) présents dans le dictionnaire
+    * */
     public String[] recuperesXMots(String lettrePrecedente, Branche[] branchesActuelles, int nombreDeMotsSouhaites){
 
             /* calcul aléatoire de la répartition des recherches de mots sur les prochaines branches */
@@ -218,25 +245,4 @@ public class Dico {
 
         return res;
     }
-
-
-
-    public static void main(String[] args) throws FileNotFoundException {
-        Dico test = new Dico();
-
-        String[] recherches = test.motsPossibles(100);
-
-        for(String val: recherches){
-            System.out.println(val);
-        }
-
-        /*for(int i = 0; i < recherches.length; i++){
-            for(int j = 0; j < recherches.length; j++){
-                if(recherches[i] == recherches[j] && i!=j){
-                    System.out.println("doublon : " + recherches[i]);
-                }
-            }
-        }*/
-    }
-
 }

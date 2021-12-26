@@ -223,7 +223,8 @@ public class Plateau {
                 if(lettres[i] == convert[j]) letterPos = j;
             }
 
-            int caseColor = this.g[lig][col].getCouleur();
+            int caseColor = 1;
+            if(!this.g[lig][col].estRecouverte()) caseColor = this.g[lig][col].getCouleur();
             int multiplyLetter = 1;
             if(caseColor <= 3){
                 multiplyLetter = caseColor;
