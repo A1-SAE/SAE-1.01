@@ -9,7 +9,8 @@ public class tests {
         p.place("ABC", 7, 5, 'h', tests);
         System.out.println(p);*/
 
-        System.out.println(tests.retireAleat());
-        System.out.println(testsVide.transfereAleat(tests, 100));
+        System.out.println(tests.getTabFreq()[3]);
+        tests.ajoute(3);
+        System.out.println(tests.getTabFreq()[3]=);
     }
 }

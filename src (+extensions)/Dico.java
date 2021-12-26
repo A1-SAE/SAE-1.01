@@ -128,7 +128,7 @@ public class Dico {
         return false;
     }
 
-    public String[] motsPossibles(double pourcentageRecherches){ /* rajouter MEE du joueur ? */
+    public String[] motsPossibles(double pourcentageRecherches){
         int motsRecherches = (int) ((pourcentageRecherches * this.nombreDeMots) / 100);
         if(motsRecherches > this.nombreDeMots) motsRecherches = this.nombreDeMots;
 
@@ -138,32 +138,6 @@ public class Dico {
     public String[] recuperesXMots(String lettrePrecedente, Branche[] branchesActuelles, int nombreDeMotsSouhaites){
 
             /* calcul aléatoire de la répartition des recherches de mots sur les prochaines branches */
-            /*int[]posMots = new int[nombreDeMotsSouhaites];
-            for(int i = 0; i < posMots.length; i++){
-                 int randomValue = Ut.randomMinMax(1, motsSurLesBranches);
-
-                randomValue = posMots[i];
-            }
-
-            *//* lie une branche avec le nombre de mots à chercher dedans *//*
-            int motsPrev = 0;
-            int mots = 0;
-            Map<Branche, Integer> motsParBranche = new HashMap<Branche, Integer>();
-            for(int i = 0; i < branchesActuelles.length; i++){
-                mots += branchesActuelles[i].getWords();
-
-                for(int pos: posMots){
-                    if(pos > motsPrev && pos <= mots){
-                        if(motsParBranche.containsKey(branchesActuelles[i])){
-                                motsParBranche.replace(branchesActuelles[i], motsParBranche.get(branchesActuelles[i]) + 1);
-                        }else{
-                            motsParBranche.put(branchesActuelles[i], 1);
-                        }
-                    }
-                }
-                motsPrev = mots;
-            }*/
-
             int motsSurLesBranches;
             Map<Branche, Integer> motsParBranche = new HashMap<Branche, Integer>(); /* mots attribués sur une branche */
             Map<Branche, Integer> motsChoisissables = new HashMap<Branche, Integer>(); /* espaces disponibles sur une branche */

@@ -6,6 +6,9 @@ public class Scrabble {
 
     private static int[] nbPointsJeton = {1,3,3,2,1,4,2,4,1,8,10,1,2,1,1,3,8,1,1,1,1,4,10,10,10,10,0};
 
+    /*
+    * action : constructeur de Scrabble
+    * */
     public Scrabble(String[] nomJoueurs){
         this.numJoueur = Ut.randomMinMax(0, nomJoueurs.length - 1);
         this.joueurs = new Joueur[nomJoueurs.length];
@@ -17,14 +20,16 @@ public class Scrabble {
         this.sac = new MEE(new int[] {9,2,2,3,15,2,2,2,8,1,1,5,3,6,6,2,1,6,6,6,6,2,1,1,1,1});
     }
 
+    /*
+    * résultat : joueur courant et plateau
+    * */
     public String toString(){
-        String res = "[" + this.joueurs[this.numJoueur] + "]\n\n";
-
-        res += this.plateau;
-
-        return res;
+        return "[" + this.joueurs[this.numJoueur] + "]\n\n" + this.plateau;
     }
 
+    /*
+    * action/resultat : orchestre la partie de scrabble et retourne le ou les gagannts
+    * */
     public Joueur[] partie(){
         int tour = 0;
         for(int i = 0; i < this.joueurs.length; i++){
@@ -32,15 +37,16 @@ public class Scrabble {
         }
 
         int raisonFinPartie = 0;
-        while(raisonFinPartie == 0){ // modifier condition plus tard (conditions de victoire)
+        while(raisonFinPartie == 0){
             int toursPasses = 0;
             this.numJoueur = this.numJoueur % this.joueurs.length;
 
             for(int i = 0; i < this.joueurs.length; i++){
+                System.out.println(this);
                 if(this.joueurs[i].getChevalet().getNbTotEx() == 0 && this.sac.getNbTotEx() == 0){
                     raisonFinPartie = 1;
                 }else{
-                    int choix = -1;
+                    int choix;
                     do{
                         System.out.println("Tour du joueur : " + this.joueurs[i].getNom() + "\n" +
                                 "[1] Placer un mot\n" +
@@ -75,8 +81,6 @@ public class Scrabble {
                             if(jetonsEnleves < this.sac.getNbTotEx()) jetonsEnleves = this.sac.getNbTotEx();
                             this.joueurs[i].prendJetons(this.sac, jetonsEnleves);
 
-                            /* MAJ plateau */
-                            System.out.println(this.plateau.toString());
                             break;
                         case 2:
                             /* passer son tour */
@@ -86,10 +90,10 @@ public class Scrabble {
                         case 3:
                             /* Defausser une ou des lettres */
 
-                            String letters = "";
+                            String letters;
                             do{
                                 System.out.println("Quelles lettres souhaitez-vous défausser (entrez les lettres à la suite comme ceci : 'ABCD') : ");
-                                letters = Ut.saisirChaine();
+                                letters = Ut.saisirChaine().toUpperCase();
                             }while(joueurs[i].estCorrectPourEchange(letters));
 
                             joueurs[i].echangeJetonsAux(this.sac, letters);
@@ -103,6 +107,8 @@ public class Scrabble {
 
         switch(raisonFinPartie){
             case 1:
+                /* le joueur courant n'a plus de jetons et le sac est vide */
+
                 int total = 0;
                 for(int i = 0; i < this.joueurs.length; i++){
                     if(i != numJoueur){
@@ -114,6 +120,8 @@ public class Scrabble {
 
                 break;
             case 2:
+                /* tous les joueurs ont passé leur tour */
+
                 for(int i = 0; i < this.joueurs.length; i++){
                     this.joueurs[i].ajouteScore(- this.joueurs[i].nbPointsChevalet(Scrabble.nbPointsJeton));
                 }
@@ -128,16 +136,13 @@ public class Scrabble {
                 gagnants = new Joueur[1];
                 gagnants[0] = this.joueurs[i];
             }else if(this.joueurs[i].getScore() == scoreGagnant){
-                Joueur[] temp = new Joueur[gagnants.length];
-                for(int j = 0; j < temp.length; j++){
+                Joueur[] temp = new Joueur[gagnants.length + 1];
+                for(int j = 0; j < gagnants.length; j++){
                     temp[j] = gagnants[j];
                 }
+                temp[temp.length - 1] = this.joueurs[i];
 
-                gagnants = new Joueur[gagnants.length + 1];
-                for(int j = 0; j < temp.length; j++){
-                    gagnants[j] = temp[j];
-                }
-                gagnants[gagnants.length - 1] = this.joueurs[i];
+                gagnants = temp;
             }
         }
 
@@ -154,6 +159,4 @@ public class Scrabble {
 
         return gagnants;
     }
-
-
 }

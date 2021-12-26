@@ -17,6 +17,9 @@ public class Plateau {
             {1,4,1,1,1,3,1,1,1,3,1,1,1,4,1},
             {5,1,1,2,1,1,1,5,1,1,1,2,1,1,5}};
 
+    /*
+    * action : constructeur de Plateau avec une grille vierge
+    * */
     public Plateau(){
         this.g = new Case[15][15];
         for(int i = 0; i < this.g.length; i++){
@@ -26,6 +29,16 @@ public class Plateau {
         }
     }
 
+    /*
+    * action : constructeur de Plateau avec une grille donnée
+    * */
+    public Plateau(Case[][] plateau){
+        this.g = plateau;
+    }
+
+    /*
+    * résultat : chaîne décrivant ce plateau
+    * */
     public String toString(){
         String res = "";
         for(int i = -1; i < this.g.length; i++){
@@ -197,6 +210,7 @@ public class Plateau {
         char[] convert = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
         int res = 0;
         int multiplyWord = 1;
+        int faitScrabble = 0;
 
         int col = numCol;
         int lig = numLig;
@@ -219,9 +233,13 @@ public class Plateau {
             }
 
             res += (nbPointsJet[letterPos] * multiplyLetter);
+
+            if(!this.g[lig][col].estRecouverte()) faitScrabble++;
         }
 
-        return res * multiplyWord;
+        res *= multiplyWord;
+        if(faitScrabble == 7) res += 50;
+        return res;
     }
 
     /**
@@ -241,7 +259,7 @@ public class Plateau {
             if(sens == 'h') col = numCol + i;
             if(sens == 'v') lig = numLig + i;
 
-            if(this.g[lig][col].getLettre() != lettres[i]){
+            if(!this.g[lig][col].estRecouverte()){
                 this.g[lig][col].setLettre(lettres[i]);
                 e.retireLettre(lettres[i]);
                 res++;
@@ -249,9 +267,6 @@ public class Plateau {
 
         }
 
-
         return res;
     }
-
-
 }
