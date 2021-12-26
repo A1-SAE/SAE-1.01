@@ -2,10 +2,12 @@ public class Branche {
     private Branche[] lettresSuivantes;
     private char lettre;
     boolean estUneFinDeMotPossible;
+    int motsSurBranche;
 
     public Branche(char lettre, boolean estUneFinDeMotPossible){
         this.lettre = lettre;
         this.estUneFinDeMotPossible = estUneFinDeMotPossible;
+        this.motsSurBranche = 1;
         lettresSuivantes = null;
     }
 
@@ -31,5 +33,13 @@ public class Branche {
 
     public void setFinDeMot(){
         this.estUneFinDeMotPossible = true;
+    }
+
+    public void increaseWord(){
+        this.motsSurBranche++;
+    }
+
+    public int getWords(){
+        return this.motsSurBranche;
     }
 }

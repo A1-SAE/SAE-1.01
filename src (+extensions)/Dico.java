@@ -1,18 +1,21 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Dico {
-    Branche[] debuts;
+    private Branche[] debuts;
+    private int nombreDeMots;
 
     public Dico() throws FileNotFoundException {
         File doc =
                 new File("dicoReference.txt");
         Scanner obj = new Scanner(doc);
         Scanner objCount = new Scanner(doc);
-        int lines = 0;
+        this.nombreDeMots = 0;
         while(objCount.hasNextLine()){
-            lines++;
+            this.nombreDeMots++;
             objCount.nextLine();
         }
 
@@ -25,8 +28,8 @@ public class Dico {
             System.out.print("\033[H\033[2J");
             System.out.flush();
 
-            if(line % (lines / 10) == 0) loadingbar += "\u2588";
-            System.out.println(mot + "\n" + ((line*100)/lines) + "% " + loadingbar);
+            if(line % (this.nombreDeMots / 10) == 0) loadingbar += "\u2588";
+            System.out.println(mot + "\n" + ((line*100)/this.nombreDeMots) + "% " + loadingbar);
 
 
             char[] lettres = mot.toCharArray();
@@ -41,6 +44,7 @@ public class Dico {
                         for(int j = 0; j < this.debuts.length; j++){
                             if(this.debuts[j].getLettre() == lettre){
                                 currentBranche = debuts[j];
+                                debuts[j].increaseWord();
                                 break;
                             }
                         }
@@ -66,6 +70,7 @@ public class Dico {
                         for(int j = 0; j < lettresSuivantes.length; j++){
                             if(lettresSuivantes[j].getLettre() == lettre){
                                 currentBranche = currentBranche.getLettresSuivantes()[j];
+                                currentBranche.increaseWord();
                                 lettreSuivanteExiste = true;
 
                                 if(i == lettres.length - 1) currentBranche.setFinDeMot();
@@ -123,13 +128,93 @@ public class Dico {
         return false;
     }
 
-    /*public static void main(String[] args) throws FileNotFoundException {
+    public String[] motsPossibles(double pourcentageRecherches){ /* rajouter MEE du joueur ? */
+        int motsRecherches = (int) ((pourcentageRecherches * this.nombreDeMots) / 100);
+        if(motsRecherches > this.nombreDeMots) motsRecherches = this.nombreDeMots;
+
+        return this.recuperesXMots("",this.debuts, motsRecherches);
+    }
+
+    public String[] recuperesXMots(String lettrePrecedente, Branche[] branchesActuelles, int nombreDeMotsSouhaites){
+
+        /* calcul du nombre de mots possibles avec les branches qui suivent */
+        int motsSurLesBranches = 0;
+        for(Branche b: branchesActuelles){
+            motsSurLesBranches+= b.getWords();
+        }
+
+        /* calcul aléatoire de la répartition des recherches de mots sur les prochaines branches */
+        int[]posMots = new int[nombreDeMotsSouhaites];
+        for(int i = 0; i < posMots.length; i++){
+            posMots[i] = Ut.randomMinMax(1, motsSurLesBranches);
+        }
+
+        /* lie une branche avec le nombre de mots à chercher dedans */
+        Map<Branche, Integer> motsParBranche = new HashMap<Branche, Integer>();
+        int motsPrev = 0;
+        int mots = 0;
+        for(int i = 0; i < branchesActuelles.length; i++){
+            mots += branchesActuelles[i].getWords();
+
+            for(int pos: posMots){
+                if(pos > motsPrev && pos <= mots){
+                    if(motsParBranche.containsKey(branchesActuelles[i])){
+                        motsParBranche.replace(branchesActuelles[i], motsParBranche.get(branchesActuelles[i]) + 1);
+                    }else{
+                        motsParBranche.put(branchesActuelles[i], 1);
+                    }
+                }
+            }
+            motsPrev = mots;
+        }
+
+        /* envisage une fin de mot */
+        String[] res = new String[nombreDeMotsSouhaites];
+        for(Branche b: branchesActuelles){
+            if(motsParBranche.containsKey(b) && b.estUneFinDeMotPossible){
+                if(Ut.randomMinMax(1, b.getWords()) == 1){
+                    motsParBranche.replace(b, motsParBranche.get(b) - 1);
+                    boolean estAjoute = false;
+                    for(int i = 0; i < res.length; i++){
+                        if(res[i] == null && !estAjoute){
+                            res[i] = lettrePrecedente + b.getLettre();
+                            if(motsParBranche.get(b) == 0) motsParBranche.remove(b);
+                            estAjoute = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        /* récupères la suite des mots cherchés dans les branches suivantes */
+        for(Branche b: branchesActuelles){
+            if(motsParBranche.containsKey(b)){
+                String[] values = this.recuperesXMots(String.valueOf(b.getLettre()), b.getLettresSuivantes(), motsParBranche.get(b));
+                int valuesIndex = 0;
+                for(int i = 0; i < res.length; i++){
+                    if(res[i] == null){
+                        res[i] = lettrePrecedente + values[valuesIndex];
+                        valuesIndex++;
+                    }
+
+                    if(valuesIndex == values.length) break;
+                }
+            }
+        }
+
+        return res;
+    }
+
+
+
+    public static void main(String[] args) throws FileNotFoundException {
         Dico test = new Dico();
 
-        System.out.println(test.existe("PAPIERR"));
-        System.out.println(test.existe("BALADE"));
-        System.out.println(test.existe("SYSTEME"));
-        System.out.println(test.existe("DICTCIONNAIRE"));
-    }*/
+        String[] recherches = test.motsPossibles(99);
+
+        for(String val: recherches){
+            System.out.println(val);
+        }
+    }
 
 }

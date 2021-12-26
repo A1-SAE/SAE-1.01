@@ -128,7 +128,6 @@ public class MEE {
         for(int i = 0; i < k; i++){
             if(this.estVide()) return i;
             e.ajoute(this.retireAleat());
-            /* utiliser retireAleat plutôt */
         }
 
         return k;
