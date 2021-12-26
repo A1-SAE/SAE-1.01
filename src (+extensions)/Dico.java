@@ -137,13 +137,6 @@ public class Dico {
 
     public String[] recuperesXMots(String lettrePrecedente, Branche[] branchesActuelles, int nombreDeMotsSouhaites){
 
-        /* calcul du nombre de mots possibles avec les branches qui suivent */
-        int motsSurLesBranches = 0;
-        for(Branche b: branchesActuelles){
-            motsSurLesBranches+= b.getWords();
-        }
-
-
             /* calcul aléatoire de la répartition des recherches de mots sur les prochaines branches */
             /*int[]posMots = new int[nombreDeMotsSouhaites];
             for(int i = 0; i < posMots.length; i++){
@@ -171,53 +164,47 @@ public class Dico {
                 motsPrev = mots;
             }*/
 
-
-            Map<Branche, Integer> motsParBranche = new HashMap<Branche, Integer>();
-            Branche[] branchesAImplementer = new Branche[branchesActuelles.length];
-            for(int i = 0; i < branchesAImplementer.length; i++){
-                branchesAImplementer[i] = branchesActuelles[i];
+            int motsSurLesBranches;
+            Map<Branche, Integer> motsParBranche = new HashMap<Branche, Integer>(); /* mots attribués sur une branche */
+            Map<Branche, Integer> motsChoisissables = new HashMap<Branche, Integer>(); /* espaces disponibles sur une branche */
+            for(Branche b: branchesActuelles){
+                motsChoisissables.put(b, b.getWords());
             }
 
             for(int i = 0; i < nombreDeMotsSouhaites; i++){
-                boolean error = false;
-                do{
-                    int randomValue = Ut.randomMinMax(1, motsSurLesBranches);
-                    int motsPrev = 0;
-                    int mots = 0;
+                Branche[] branchesChoisissables = new Branche[branchesActuelles.length];
+                motsSurLesBranches = 0;
+                for(int j = 0; j < branchesActuelles.length; j++){
+                    if(motsChoisissables.get(branchesActuelles[j]) > 0){
+                        branchesChoisissables[j] = branchesActuelles[j];
+                        motsSurLesBranches+= motsChoisissables.get(branchesChoisissables[j]);
+                    }
+                }
 
-                    for(int j = 0; j < branchesAImplementer.length; j++){
-                        mots += branchesAImplementer[j].getWords();
+                int randomValue = Ut.randomMinMax(1, motsSurLesBranches);
+                int motsPrev = 0;
+                int mots = 0;
 
+                /* pour chaque branche que l'on peut encore choisir, on regarde à laquelle correcpond la valeur de l'aléatoire */
+                for(int j = 0; j < branchesChoisissables.length; j++){
+                    if(branchesChoisissables[j] != null){
+                        mots += motsChoisissables.get(branchesChoisissables[j]);
+
+                        /* affectation des lettres sur une branche */
                         if(randomValue > motsPrev && randomValue <= mots){
-                            if(motsParBranche.containsKey(branchesAImplementer[j])){
-                                if(motsParBranche.get(branchesAImplementer[j]) == branchesAImplementer[j].getWords()){
-                                    error = true;
-
-                                    Branche[] temp = new Branche[branchesAImplementer.length];
-                                    int l = 0;
-                                    for(int k = 0; k < branchesAImplementer.length; k++){
-                                        if(k != j){
-                                            temp[l] = branchesAImplementer[k];
-                                            l++;
-                                        }
-                                    }
-                                    branchesActuelles = temp;
-                                    break;
-                                }else{
-                                    motsParBranche.replace(branchesAImplementer[j], motsParBranche.get(branchesAImplementer[j]) + 1);
-                                }
+                            if(motsParBranche.containsKey(branchesChoisissables[j])){
+                                motsParBranche.replace(branchesChoisissables[j], motsParBranche.get(branchesChoisissables[j]) + 1);
                             }else{
-                                motsParBranche.put(branchesAImplementer[j], 1);
+                                motsParBranche.put(branchesChoisissables[j], 1);
                             }
+
+                            motsChoisissables.replace(branchesChoisissables[j], motsChoisissables.get(branchesChoisissables[j]) - 1);
                         }
 
                         motsPrev = mots;
                     }
 
-                }while(!error);
-
-
-
+                }
             }
 
 
@@ -225,7 +212,7 @@ public class Dico {
         String[] res = new String[nombreDeMotsSouhaites];
         for(Branche b: branchesActuelles){
             if(motsParBranche.containsKey(b) && b.estUneFinDeMotPossible){
-                if(Ut.randomMinMax(1, b.getWords()) == 1){
+                if(Ut.randomMinMax(1, b.getWords()) == 1 || motsParBranche.get(b) == b.getWords()){
                     motsParBranche.replace(b, motsParBranche.get(b) - 1);
                     boolean estAjoute = false;
                     for(int i = 0; i < res.length; i++){
@@ -263,11 +250,19 @@ public class Dico {
     public static void main(String[] args) throws FileNotFoundException {
         Dico test = new Dico();
 
-        String[] recherches = test.motsPossibles(0.50);
+        String[] recherches = test.motsPossibles(100);
 
         for(String val: recherches){
             System.out.println(val);
         }
+
+        /*for(int i = 0; i < recherches.length; i++){
+            for(int j = 0; j < recherches.length; j++){
+                if(recherches[i] == recherches[j] && i!=j){
+                    System.out.println("doublon : " + recherches[i]);
+                }
+            }
+        }*/
     }
 
 }
