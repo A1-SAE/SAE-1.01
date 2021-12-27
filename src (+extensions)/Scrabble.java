@@ -1,5 +1,5 @@
 /*
-* extensions : 3.1
+* extensions : 3.1, 3.3
 * */
 
 public class Scrabble {
@@ -75,11 +75,12 @@ public class Scrabble {
                                 pos[1] = Ut.saisirEntier();
                                 System.out.println("Veuillez choisir le sens de placement ('h' pour horizontal et 'v' pour vertical) : ");
                                 dir = Ut.saisirCaractere();
-                            }while(!((mot.toCharArray().length >= 2) && (dir == 'y' || dir == 'h') && (pos[0] >= 0 && pos[0] <= 14) && (pos[1] >= 0 && pos[1] <= 14) && this.plateau.placementValide(mot, pos[0], pos[1], dir, this.joueurs[i].getChevalet())));
+                            }while(!((mot.toCharArray().length >= 2) && (dir == 'y' || dir == 'h') && (pos[0] >= 0 && pos[0] <= 14) && (pos[1] >= 0 && pos[1] <= 14) && this.plateau.placementValide(mot, pos[0], pos[1], dir, this.joueurs[i].getChevalet()) != ""));
 
                             /* incrémente le score du joueur */
-                            this.joueurs[i].ajouteScore(this.plateau.nbPointsPlacement(mot, pos[0], pos[1], dir, Scrabble.nbPointsJeton));
-                            this.joueurs[i].ajouteScore(this.plateau.nbPointsMotsTransversaux(mot, pos[0], pos[1], dir, Scrabble.nbPointsJeton));
+                            String motJokerise = this.plateau.placementValide(mot, pos[0], pos[1], dir, this.joueurs[i].getChevalet());
+                            this.joueurs[i].ajouteScore(this.plateau.nbPointsPlacement(motJokerise, pos[0], pos[1], dir, Scrabble.nbPointsJeton));
+                            this.joueurs[i].ajouteScore(this.plateau.nbPointsMotsTransversaux(motJokerise, pos[0], pos[1], dir, Scrabble.nbPointsJeton));
 
                             /* repioche des jetons jusqu'à 7 */
                             int jetonsEnleves = this.plateau.place(mot, pos[0], pos[1], dir, this.joueurs[i].getChevalet());

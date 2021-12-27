@@ -1,3 +1,12 @@
+/*
+* extensions : 3.3
+*
+* (3.3)
+* Le jeton joker est reconnu dans une case grâce à une variable qui indique s'il est joker ou non. Graphiquement
+* on reconnait ces jetons par une étoile. Pour pouvoir calculer le score, on différencie une lettre normale en majuscule
+* et une lettre joker en minuscule.
+* */
+
 public class Case{
 	private int coul;
 	private char lettre;

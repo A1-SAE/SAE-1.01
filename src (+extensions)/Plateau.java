@@ -1,5 +1,5 @@
 /*
-* extensions : 3.1
+* extensions : 3.1, 3.3
 * */
 
 import java.io.FileNotFoundException;
@@ -170,9 +170,9 @@ public class Plateau {
      *     de la case (numLig, numCol) dans le sens donné par sens à l’aide
      *     des jetons de e est valide.
      */
-    public boolean placementValide(String mot, int numLig, int numCol, char sens, MEE e, Dico capeloBot) {
+    public String placementValide(String mot, int numLig, int numCol, char sens, MEE e, Dico capeloBot) {
         /* CapeloDico v2 */
-        if(!capeloBot.existe(mot)) return false;
+        if(!capeloBot.existe(mot)) return "";
 
         char[] lettres = mot.toCharArray();
         MEE eCopy = new MEE(e);
@@ -201,10 +201,10 @@ public class Plateau {
              * */
 
             /* vérifie que mot >= 2 lettres */
-            if(lettres.length < 2) return false;
+            if(lettres.length < 2) return "";
 
             /* vérifie que le placement du mot contient la case centrale */
-            if(!(numLig <= 7 && 7 <= lig && numCol <= 7 && 7 <= col)) return false;
+            if(!(numLig <= 7 && 7 <= lig && numCol <= 7 && 7 <= col)) return "";
 
             int jetonsManquants = 0;
             /* vérifie que chevalet contient jetons */
@@ -212,7 +212,7 @@ public class Plateau {
                 if(!eCopy.retireLettre(lettres[i])) jetonsManquants++;
             }
             for(int i = 0; i < jetonsManquants; i++){
-                if(!eCopy.retire(26)) return false;
+                if(!eCopy.retire(26)) return "";
             }
 
         }else{
@@ -231,13 +231,13 @@ public class Plateau {
              * */
 
             /* vérifie que le mot ne dépasse pas */
-            if(lig > 14 || col > 14) return false;
+            if(lig > 14 || col > 14) return "";
 
             /* vérification non précédée ou suivie d'une case recouverte */
-            if((sens == 'v' && (numCol - 1 < 0 || this.g[numLig][numCol - 1].estRecouverte())) || (sens == 'h' && (numLig - 1 < 0 || this.g[numLig - 1][numCol].estRecouverte()))) return false;
+            if((sens == 'v' && (numCol - 1 < 0 || this.g[numLig][numCol - 1].estRecouverte())) || (sens == 'h' && (numLig - 1 < 0 || this.g[numLig - 1][numCol].estRecouverte()))) return "";
 
             /* vérification mots transversaux */
-            if(!this.motsTransversaux(mot, numLig, numCol, sens, capeloBot)) return false;
+            if(!this.motsTransversaux(mot, numLig, numCol, sens, capeloBot)) return "";
 
             /*
              * vérifications :
@@ -258,7 +258,7 @@ public class Plateau {
 
                 if(this.g[lig2][col2].estRecouverte()){
                     contientRecouverte = true;
-                    if(this.g[lig2][col2].getLettre() != lettres[i]) return false;
+                    if(this.g[lig2][col2].getLettre() != lettres[i]) return "";
                 }else{
                     contientNonRecouverte = true;
 
@@ -272,17 +272,20 @@ public class Plateau {
                     if(sens == 'h') lig3 -= 2;
                     if(this.g[lig3][col3].estRecouverte()) contientRecouverte = true;
 
-                    if(!eCopy.retireLettre(lettres[i])) jetonsManquants++;
+                    if(!eCopy.retireLettre(lettres[i])){
+                        lettres[i] = Character.toUpperCase(lettres[i]);
+                        jetonsManquants++;
+                    }
                 }
             }
 
-            if(!(contientNonRecouverte && contientRecouverte)) return false;
+            if(!(contientNonRecouverte && contientRecouverte)) return "";
             for(int i = 0; i < jetonsManquants; i++){
-                if(!eCopy.retire(26)) return false;
+                if(!eCopy.retire(26)) return "";
             }
         }
 
-        return true;
+        return mot;
     }
 
     /**
@@ -305,8 +308,12 @@ public class Plateau {
             if(sens == 'v') lig = numLig + i;
 
             int letterPos = 0;
+            char letter = ' ';
             for(int j = 0; j < convert.length; j++){
-                if(lettres[i] == convert[j]) letterPos = j;
+                if(Character.toUpperCase(lettres[i]) == convert[j]){
+                    letterPos = j;
+                    letter = letters[j];
+                }
             }
 
             int caseColor = 1;
@@ -319,7 +326,9 @@ public class Plateau {
                 if(caseColor == 5) multiplyWord *= 3;
             }
 
-            res += (nbPointsJet[letterPos] * multiplyLetter);
+            if(Character.isUpperCase(letter)){
+                res += (nbPointsJet[letterPos] * multiplyLetter);
+            }
 
             if(!this.g[lig][col].estRecouverte()) faitScrabble++;
         }
@@ -344,7 +353,8 @@ public class Plateau {
 
         for (char value : lettresMot) {
             String avant = "";
-            String pendant = String.valueOf(value);
+            String pendant = "";
+            String.valueOf(value);
             String apres = "";
             if (sens == 'v') numLig++;
             if (sens == 'h') numCol++;
@@ -355,7 +365,11 @@ public class Plateau {
             if (sens == 'v') col = numCol + 1;
 
             while (lig <= 14 && col <= 14 && this.g[lig][col].estRecouverte()) {
-                apres += this.g[lig][col].getLettre();
+                if(this.g[lig][col].estJoker){
+                    apres += Character.toLowerCase(this.g[lig][col].getLettre());
+                }else{
+                    apres += this.g[lig][col].getLettre();
+                }
 
                 if (sens == 'h') lig++;
                 if (sens == 'v') col++;
@@ -365,7 +379,11 @@ public class Plateau {
             if (sens == 'v') col = numCol -1;
 
             while (lig >= 0 && col >= 0 && this.g[lig][col].estRecouverte()) {
-                avant += this.g[lig][col].getLettre();
+                if(this.g[lig][col].estJoker){
+                    avant += Character.toLowerCase(this.g[lig][col].getLettre());
+                }else{
+                    avant += this.g[lig][col].getLettre();
+                }
 
                 if (sens == 'h') lig--;
                 if (sens == 'v') col--;
