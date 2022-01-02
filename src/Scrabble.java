@@ -71,7 +71,7 @@ public class Scrabble {
                                 pos[1] = Ut.saisirEntier();
                                 System.out.println("Veuillez choisir le sens de placement ('h' pour horizontal et 'v' pour vertical) : ");
                                 dir = Ut.saisirCaractere();
-                            }while(!((mot.toCharArray().length >= 2) && (dir == 'y' || dir == 'h') && (pos[0] >= 0 && pos[0] <= 14) && (pos[1] >= 0 && pos[1] <= 14) && this.plateau.placementValide(mot, pos[0], pos[1], dir, this.joueurs[i].getChevalet())));
+                            }while(!((mot.length() >= 2) && (dir == 'y' || dir == 'h') && (pos[0] >= 0 && pos[0] <= 14) && (pos[1] >= 0 && pos[1] <= 14) && this.plateau.placementValide(mot, pos[0], pos[1], dir, this.joueurs[i].getChevalet())));
 
                             /* incrémente le score du joueur */
                             this.joueurs[i].ajouteScore(this.plateau.nbPointsPlacement(mot, pos[0], pos[1], dir, Scrabble.nbPointsJeton));

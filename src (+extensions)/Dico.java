@@ -109,6 +109,7 @@ public class Dico {
     * résultat : vrai ssi mot est un mot appartenant au dictionnaire
     * */
     public boolean existe(String mot){
+        if(mot != mot.toLowerCase()) return false;
         char[] lettres = mot.toCharArray();
         Branche currentBranche = null;
 

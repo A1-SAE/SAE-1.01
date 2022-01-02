@@ -107,7 +107,7 @@ public class Plateau {
         /* CapeloDico */
         char estValide = ' ';
         do {
-            System.out.println("[CapeloDico] Le mot suivant est-t-il valide ? (oui : o, non : n) : " + mot);
+            System.out.println("[CapeloDico] Le mot suivant est-t-il valide et en majuscules ? (oui : o, non : n) : " + mot);
             estValide = Ut.saisirCaractere();
         }while(!(estValide == 'o' || estValide == 'n'));
         if(estValide == 'n') return false;
