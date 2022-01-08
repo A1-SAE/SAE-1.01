@@ -54,10 +54,13 @@ public class Joueur{
 	 * 			  et 0 sinon
 	 */
 	public int joue(Plateau p, MEE s, int[] nbPointJet){
-		int res=0;
+		int res;
 
-		// Manque Plateau
-
+		if(s.getNbTotEx() < 26 && nbPointJet.length >= 26){ // pré-requis
+			if(){ res = -1; }// Passe son tour ?
+			else if(chevalet.estVide()){ res = 1; }
+			else{ res = 0; }
+		}
 		return res;
 	}
 
@@ -75,7 +78,7 @@ public class Joueur{
 	public boolean joueMot(Plateau p, MEE s, int[] nbPointsJet) {
 		boolean res = false;
 
-		// Manque Plateau
+		if(this.joueMotAux(p, s, nbPointsJet, "SALUT", 2, 2, 'v')){ res = true; }
 
 		return res;
 	}
@@ -85,7 +88,9 @@ public class Joueur{
 	* action : simule le placement d’un mot de this
 	*/
 	public void joueMotAux(Plateau p, MEE s, int[] nbPointsJet, String mot, int numLig, int numCol, char sens) {
-		// Manque Plateau
+		if(this.joueMot(p, s, nbPointsJet)){
+			p.place(mot, numLig, numCol, sens, s);
+		}
 	}
 
 
@@ -98,8 +103,9 @@ public class Joueur{
 	* stratégie : appelle les méthodes estCorrectPourEchange et echangeJetonsAux
 	*/
 	public void echangeJetons(MEE sac) {
-		if(estCorrectPourEchange("A")){
-			echangeJetonsAux(sac, "A");
+		// jsp
+		if(this.estCorrectPourEchange("SALUT")){
+			this.echangeJetonsAux(sac, /*jsp*/);
 		}
 	}
 
@@ -110,9 +116,12 @@ public class Joueur{
 	public boolean estCorrectPourEchange (String mot) {
 		boolean res = false;
 		
-		if(mot.isUpperCase() /*&& contient mot dans son chevalet*/){
-			res = true;
+		MEE copieChevalet = new MEE(this.chevalet);
+
+		while(!copieChevalet.estVide()){
+			copieChevalet.retire(copieChevalet.length);
 		}
+		if(copieChevalet.estVide()){ res = true;}
 
 		return res;
 
