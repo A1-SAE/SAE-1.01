@@ -5,6 +5,8 @@ public class Joueur{
 
 	public Joueur(String unNom){
 		this.nom = unNom;
+		this.chevalet = new MEE(26);
+		this.score = 0;
 	}
 
 	public String toString(){
@@ -15,8 +17,8 @@ public class Joueur{
 		return this.score;
 	}
 
-	public int ajouteScore(int nb){
-		return this.score + nb;
+	public void ajouteScore(int nb){
+		this.score = this.score + nb;
 	}
 
 	/**
@@ -42,26 +44,48 @@ public class Joueur{
 	 * 			dans la limite de son contenu.
 	 */
 	public void prendJetons (MEE s, int nbJetons) {
-		s.retire(nbJetons);
+		s.transfereAleat(this.chevalet, nbJetons);
 	}
 
 	/**
 	 * pré-requis : les éléments de s sont inférieurs à 26
 	 * 				et nbPointsJet.length >= 26
-	 * action : simule le coup de this :  this choisit de passer son tour,
+	 * action : simule le coup de this : this choisit de passer son tour,
 	 * 			d’échanger des jetons ou de placer un mot
 	 * résultat : -1 si this a passé son tour, 1 si son chevalet est vide,
 	 * 			  et 0 sinon
 	 */
 	public int joue(Plateau p, MEE s, int[] nbPointJet){
-		int res;
+		int choix;
+		do{
+			System.out.println(this.chevalet + "\nTour du joueur : " + this.getNom() + "\n" +
+					"[1] Placer un mot\n" +
+					"[2] Passer son tour\n" +
+					"[3] Défausser une ou des lettres");
+			choix = Ut.saisirEntier();
+		}while(!(choix >= 1 && choix <= 3));
 
-		if(s.getNbTotEx() < 26 && nbPointJet.length >= 26){ // pré-requis
-			if(){ res = -1; }// Passe son tour ?
-			else if(chevalet.estVide()){ res = 1; }
-			else{ res = 0; }
+		switch(choix){
+			case 1:
+				/* placer un mot */
+				boolean placementReussi = false;
+				while(!placementReussi){
+					placementReussi = this.joueMot(p, s, nbPointJet);
+				}
+
+				break;
+			case 2:
+				/* passer son tour */
+
+				break;
+			case 3:
+				/* Defausser une ou des lettres */
+				this.echangeJetons(s);
+
+				break;
 		}
-		return res;
+
+		return choix;
 	}
 
 	/** pré-requis : les éléments de s sont inférieurs à 26
@@ -76,11 +100,22 @@ public class Joueur{
 	* stratégie : utilise la méthode joueMotAux
 	*/
 	public boolean joueMot(Plateau p, MEE s, int[] nbPointsJet) {
-		boolean res = false;
+		String mot = "";
+		int[] pos = new int[] {-1, -1};
+		char dir = ' ';
+		System.out.println("Veuillez entrer le mot que vous souhaitez jouer : ");
+		mot = Ut.saisirChaine();
+		System.out.println("Veuillez entrer la ligne de départ du mot : ");
+		pos[0] = Ut.saisirEntier();
+		System.out.println("Veuillez entrer la colonne de départ du mot : ");
+		pos[1] = Ut.saisirEntier();
+		System.out.println("Veuillez choisir le sens de placement ('h' pour horizontal et 'v' pour vertical) : ");
+		dir = Ut.saisirCaractere();
 
-		if(this.joueMotAux(p, s, nbPointsJet, "SALUT", 2, 2, 'v')){ res = true; }
+		if(!((mot.length() >= 2) && (dir == 'v' || dir == 'h') && (pos[0] >= 0 && pos[0] <= 14) && (pos[1] >= 0 && pos[1] <= 14) && p.placementValide(mot, pos[0], pos[1], dir, this.getChevalet()))) return false;
 
-		return res;
+		this.joueMotAux(p, s, nbPointsJet, mot, pos[0], pos[1], dir);
+		return true;
 	}
 
 	/** pré-requis : cf. joueMot et le placement de mot à partir de la case
@@ -88,9 +123,14 @@ public class Joueur{
 	* action : simule le placement d’un mot de this
 	*/
 	public void joueMotAux(Plateau p, MEE s, int[] nbPointsJet, String mot, int numLig, int numCol, char sens) {
-		if(this.joueMot(p, s, nbPointsJet)){
-			p.place(mot, numLig, numCol, sens, s);
-		}
+
+		/* incrémente le score du joueur */
+		this.ajouteScore(p.nbPointsPlacement(mot, numLig, numCol, sens, nbPointsJet));
+
+		/* repioche des jetons jusqu'à 7 */
+		int jetonsEnleves = p.place(mot, numLig, numCol, sens, this.getChevalet());
+		if(jetonsEnleves > s.getNbTotEx()) jetonsEnleves = s.getNbTotEx();
+		this.prendJetons(s, jetonsEnleves);
 	}
 
 
@@ -103,10 +143,13 @@ public class Joueur{
 	* stratégie : appelle les méthodes estCorrectPourEchange et echangeJetonsAux
 	*/
 	public void echangeJetons(MEE sac) {
-		// jsp
-		if(this.estCorrectPourEchange("SALUT")){
-			this.echangeJetonsAux(sac, /*jsp*/);
-		}
+		String letters;
+		do{
+			System.out.println("Quelles lettres souhaitez-vous défausser (entrez les lettres à la suite comme ceci : 'ABCD') : ");
+			letters = Ut.saisirChaine();
+		}while(!this.estCorrectPourEchange(letters));
+
+		this.echangeJetonsAux(sac, letters);
 	}
 
 	/** résultat : vrai ssi les caractères de mot correspondent tous à des
@@ -114,18 +157,17 @@ public class Joueur{
 	* sous-ensemble des jetons du chevalet de this
 	*/
 	public boolean estCorrectPourEchange (String mot) {
-		boolean res = false;
+		if(mot.length() == 0 || !mot.equals(mot.toUpperCase())) return false;
+
+		char[] lettres = mot.toCharArray();
 		
 		MEE copieChevalet = new MEE(this.chevalet);
 
-		while(!copieChevalet.estVide()){
-			copieChevalet.retire(copieChevalet.length);
+		for (char lettre : lettres) {
+			if (!copieChevalet.retireLettre(lettre)) return false;
 		}
-		if(copieChevalet.estVide()){ res = true;}
 
-		return res;
-
-		/* tu peux créeer une copie du MEE du joueur et enlever les lettres une à une, si ça peut pas enlever (return false) alors tu retournes faux, si on peut tout enlever de la copie alors retourne vrai */
+		return true;
 	}
 
 	/** pré-requis : sac peut contenir des entiers de 0 à 25 et ensJetons
@@ -134,15 +176,14 @@ public class Joueur{
 	* jetons du sac tirés aléatoirement.
 	*/
 	public void echangeJetonsAux(MEE sac, String ensJetons) {
-		this.chevalet.retire(/*ensJetons <-- C'est un String et nous on veut un INT dans retire()...*/);
-		sac.transfereAleat(this.chevalet, /*nbJetons de ensJetons*/);
-	}
+		char[] jetons = ensJetons.toCharArray();
 
+		for(int i = 0; i < jetons.length; i++){
+			if(sac.estVide()) return;
 
-
-	public static void main(String[] args) {
-		int[] nbPointJet = new int[]{1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10};
-		//                           A  B  C  D  E  F  G  H  I  J   K  L  M  N  O  P  Q  R  S  T  U  V   W   X   Y   Z
+			this.chevalet.retireLettre(jetons[i]);
+			sac.transfereAleat(this.chevalet, 1);
+		}
 	}
 
 	public String getNom(){ return this.nom; }

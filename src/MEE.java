@@ -166,4 +166,20 @@ public class MEE {
     * résultat : retourne la fréquence des exemplaires de this
     * */
     public int[] getTabFreq() { return this.tabFreq; }
+
+    /*
+    * résultat : retourne les jetons contenus dans ce MEE
+    * */
+    public String toString(){
+        String res = "";
+
+        for(int i = 0; i < this.tabFreq.length; i++){
+            for(int j = 0; j < this.tabFreq[i]; j++){
+                res += MEE.letters[i];
+                if(!(i == (this.tabFreq.length - 1) && j == (this.tabFreq[i] - 1))) res += ", ";
+            }
+        }
+
+        return res;
+    }
 }

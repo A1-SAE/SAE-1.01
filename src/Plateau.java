@@ -126,6 +126,7 @@ public class Plateau {
                 if(this.g[i][j].estRecouverte()) estVide = false;
             }
         }
+        System.out.println(estVide);
 
         if(estVide){
             /*
@@ -187,13 +188,23 @@ public class Plateau {
 
                 if(this.g[lig2][col2].estRecouverte()){
                     contientRecouverte = true;
-                    if(this.g[lig2][col2].getLettre() != lettres[i]) return false;
+                    if(this.g[lig2][col2].getLettre() != lettres[i]){
+                        System.out.println("CE0");
+                        return false;
+                    }
                 }else{
                     contientNonRecouverte = true;
-                    if(!eCopy.retireLettre(lettres[i])) return false;
+
+                    if(!eCopy.retireLettre(lettres[i])){
+                        System.out.println("CE1");
+                        return false;
+                    }
                 }
             }
-            if(!(contientNonRecouverte && contientRecouverte)) return false;
+            if(!(contientNonRecouverte && contientRecouverte)){
+                System.out.println("CE2");
+                return false;
+            }
         }
 
         return true;
