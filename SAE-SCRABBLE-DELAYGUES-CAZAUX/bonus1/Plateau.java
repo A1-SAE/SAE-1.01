@@ -18,7 +18,7 @@ public class Plateau {
             {1,1,4,1,1,1,2,1,2,1,1,1,4,1,1},
             {1,4,1,1,1,3,1,1,1,3,1,1,1,4,1},
             {5,1,1,2,1,1,1,5,1,1,1,2,1,1,5}};
-    Dico capelo;
+    private Dico capelo;
 
     /*
     * action : constructeur de Plateau avec une grille vierge
@@ -167,7 +167,7 @@ public class Plateau {
             if(lig > 14 || col > 14) return false;
 
             /* vérification non précédée ou suivie d'une case recouverte */
-            if((sens == 'v' && (numCol - 1 < 0 || this.g[numLig][numCol - 1].estRecouverte())) || (sens == 'h' && (numLig - 1 < 0 || this.g[numLig - 1][numCol].estRecouverte()))) return false;
+            if((sens == 'h' && (numCol - 1 < 0 || this.g[numLig][numCol - 1].estRecouverte())) || (sens == 'v' && (numLig - 1 < 0 || this.g[numLig - 1][numCol].estRecouverte())) || (sens == 'h' && (numCol + 1 > 14 || this.g[numLig][numCol + 1].estRecouverte())) || (sens == 'v' && (numLig + 1 > 14 || this.g[numLig + 1][numCol].estRecouverte()))) return false;
 
             /*
             * vérifications :

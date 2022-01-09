@@ -3,20 +3,32 @@ public class Joueur{
 	private MEE chevalet;
 	private int score;
 
+	/*
+	* action : constructeur de joueur
+	* */
 	public Joueur(String unNom){
 		this.nom = unNom;
 		this.chevalet = new MEE(26);
 		this.score = 0;
 	}
 
+	/*
+	* résultat : retourne joueur sous la forme d'un string
+	* */
 	public String toString(){
-		return this.nom + " | " + this.chevalet + " | " + this.score;
+		return this.nom;
 	}
 
+	/*
+	* résultat : retourne le score du joueur
+	* */
 	public int getScore(){
 		return this.score;
 	}
 
+	/*
+	* action : incrémente le score du joueur de nb points
+	* */
 	public void ajouteScore(int nb){
 		this.score = this.score + nb;
 	}
@@ -58,7 +70,7 @@ public class Joueur{
 	public int joue(Plateau p, MEE s, int[] nbPointJet){
 		int choix;
 		do{
-			System.out.println("\nTour du joueur : " + this.getNom() + "\n" +
+			System.out.println("\nTour du joueur : " + this.getNom() + " | Chevalet : " + this.chevalet + " | Score : " + this.score +  "\n" +
 					"[1] Placer un mot\n" +
 					"[2] Passer son tour\n" +
 					"[3] Défausser une ou des lettres");
@@ -186,7 +198,13 @@ public class Joueur{
 		}
 	}
 
+	/*
+	* résultat : retourne le nom du joueur
+	* */
 	public String getNom(){ return this.nom; }
 
+	/*
+	* résultat : retourne le chevalet du joueur
+	* */
 	public MEE getChevalet(){ return this.chevalet; }
 }
