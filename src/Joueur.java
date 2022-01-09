@@ -10,7 +10,7 @@ public class Joueur{
 	}
 
 	public String toString(){
-		return this.nom + " " + this.chevalet + " " + this.score;
+		return this.nom + " | " + this.chevalet + " | " + this.score;
 	}
 
 	public int getScore(){
@@ -58,7 +58,7 @@ public class Joueur{
 	public int joue(Plateau p, MEE s, int[] nbPointJet){
 		int choix;
 		do{
-			System.out.println(this.chevalet + "\nTour du joueur : " + this.getNom() + "\n" +
+			System.out.println("\nTour du joueur : " + this.getNom() + "\n" +
 					"[1] Placer un mot\n" +
 					"[2] Passer son tour\n" +
 					"[3] Défausser une ou des lettres");

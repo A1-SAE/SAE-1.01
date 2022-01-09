@@ -188,23 +188,14 @@ public class Plateau {
 
                 if(this.g[lig2][col2].estRecouverte()){
                     contientRecouverte = true;
-                    if(this.g[lig2][col2].getLettre() != lettres[i]){
-                        System.out.println("CE0");
-                        return false;
-                    }
+                    if(this.g[lig2][col2].getLettre() != lettres[i]) return false;
                 }else{
                     contientNonRecouverte = true;
 
-                    if(!eCopy.retireLettre(lettres[i])){
-                        System.out.println("CE1");
-                        return false;
-                    }
+                    if(!eCopy.retireLettre(lettres[i])) return false;
                 }
             }
-            if(!(contientNonRecouverte && contientRecouverte)){
-                System.out.println("CE2");
-                return false;
-            }
+            if(!(contientNonRecouverte && contientRecouverte)) return false;
         }
 
         return true;
