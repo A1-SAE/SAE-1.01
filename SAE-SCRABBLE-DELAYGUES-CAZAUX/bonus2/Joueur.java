@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Joueur{
 	private String nom;
 	private MEE chevalet;
@@ -113,17 +115,25 @@ public class Joueur{
 	*/
 	public boolean joueMot(Plateau p, MEE s, int[] nbPointsJet) {
 		String mot = "";
-		int[] pos = new int[] {-1, -1};
+		String posString = "";
 		char dir = ' ';
 		System.out.println("Veuillez entrer le mot que vous souhaitez jouer : ");
 		mot = Ut.saisirChaine();
-		System.out.println("Veuillez entrer la ligne de départ du mot : ");
-		pos[0] = Ut.saisirEntier();
-		System.out.println("Veuillez entrer la colonne de départ du mot : ");
-		pos[1] = Ut.saisirEntier();
+		System.out.println("Veuillez entrer l'emplacement de départ du mot (ex: A4) : ");
+		posString = Ut.saisirChaine();
 		System.out.println("Veuillez choisir le sens de placement ('h' pour horizontal et 'v' pour vertical) : ");
 		dir = Ut.saisirCaractere();
 
+		String[] splitted = posString.split("");
+		int[] pos = new int[2];
+		pos[1] = Integer.parseInt(splitted[1]);
+
+		String[] lettresPos = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O"};
+		for(int i = 0; i < lettresPos.length; i++){
+			if(Objects.equals(splitted[0], lettresPos[i])) pos[0] = i;
+		}
+
+		System.out.println("lig: " + pos[0] + " col: " + pos[1]);
 		if(!((mot.length() >= 2) && (dir == 'v' || dir == 'h') && (pos[0] >= 0 && pos[0] <= 14) && (pos[1] >= 0 && pos[1] <= 14) && p.placementValide(mot, pos[0], pos[1], dir, this.getChevalet()))) return false;
 
 		this.joueMotAux(p, s, nbPointsJet, mot, pos[0], pos[1], dir);

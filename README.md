@@ -60,7 +60,7 @@ a
 - Scrabble
 
 #### Explications
-On vérifie à l'aide du Dico si les mots trasversaux formés sont correctes, et on calcul ensuite les points rapportés 
+On vérifie à l'aide du Dico si les mots transversaux formés sont correctes, et on calcule ensuite les points rapportés 
 par ceux-ci.
 
 ### 3.6 : Initialisation du plateau
