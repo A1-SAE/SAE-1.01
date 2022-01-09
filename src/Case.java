@@ -47,6 +47,10 @@ public class Case{
 	public String toString(){
 		if(this.estRecouverte()) return String.valueOf(this.lettre);
 
-		return String.valueOf(this.coul);
+		if(this.coul > 1){
+			return String.valueOf(this.coul);
+		}else{
+			return " ";
+		}
 	}
 }

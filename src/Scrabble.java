@@ -40,6 +40,10 @@ public class Scrabble {
         while(raisonFinPartie == 0){
             int toursPasses = 0;
             this.numJoueur = this.numJoueur % this.joueurs.length;
+            /*
+            * TODO:
+            *   UTILISER LE NUMJOUEUR, DEGAGE LA BOUCLE FOR EN DESSOUS LA
+            * */
 
             for(int i = 0; i < this.joueurs.length; i++){
                 System.out.println(this);
