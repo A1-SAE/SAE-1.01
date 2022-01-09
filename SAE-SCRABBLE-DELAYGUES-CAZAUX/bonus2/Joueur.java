@@ -132,7 +132,7 @@ public class Joueur{
 		for(int i = 0; i < lettresPos.length; i++){
 			if(Objects.equals(splitted[0], lettresPos[i])) pos[0] = i;
 		}
-		
+
 		if(!((mot.length() >= 2) && (dir == 'v' || dir == 'h') && (pos[0] >= 0 && pos[0] <= 14) && (pos[1] >= 0 && pos[1] <= 14) && p.placementValide(mot, pos[0], pos[1], dir, this.getChevalet()))) return false;
 
 		this.joueMotAux(p, s, nbPointsJet, mot, pos[0], pos[1], dir);

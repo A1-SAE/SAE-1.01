@@ -168,7 +168,14 @@ public class Plateau {
             if(lig > 14 || col > 14) return false;
 
             /* vérification non précédée ou suivie d'une case recouverte */
-            if(!(sens == 'h' && (numCol - 1 < 0 || !this.g[numLig][numCol - 1].estRecouverte()) ) && (numCol + mot.length() > 14 || !this.g[numLig][numCol + mot.length()].estRecouverte()) || (sens == 'v' && (numLig - 1 < 0 || !this.g[numLig - 1][numCol].estRecouverte()) && (numLig + mot.length() > 14 || !this.g[numLig + mot.length()][numCol].estRecouverte())))  return false;
+            if(sens == 'h'){
+                if(numCol > 0 && this.g[numLig][numCol - 1].estRecouverte()) return false;
+                if(numCol + mot.length() <= 14 && this.g[numLig][numCol + mot.length()].estRecouverte()) return false;
+            }else{
+                if(numCol > 0 && this.g[numLig - 1][numCol].estRecouverte()) return false;
+                if(numLig + mot.length() <= 14 && this.g[numLig + mot.length()][numCol].estRecouverte()) return false;
+            }
+
 
             /*
             * vérifications :

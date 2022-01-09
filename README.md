@@ -18,6 +18,7 @@ Le projet en lui-même consiste en un scrabble, avec des règles plus ou moins s
 - Branches
 - Plateau
 - Scrabble
+- Joueur
 
 #### Explications
 Le dictionnaire se crée en même temps que le Plateau. Celui-ci utilise un arbre 
@@ -28,30 +29,11 @@ long de l'arbre, ce qui nous est utile par la suite pour l'IA.
 ### 3.2 : Repérage des cases du plateau
 
 #### classes modifiées et/ou créées
-- a
-
-#### Explications
-a
-
-### 3.3 : Ajout des jetons joker
-
-#### classes modifiées et/ou créées
 - Plateau
-- Scrabble
-- Case
+- Joueur
 
 #### Explications
-Le jeton joker est reconnu dans une case grâce à une variable qui indique s'il est joker ou non. Graphiquement 
-on reconnait ces jetons par une étoile. Pour pouvoir calculer le score, on différencie une lettre normale en majuscule 
-et une lettre joker en minuscule.
-
-### 3.4 : Détermination du joueur qui commence
-
-#### classes modifiées et/ou créées
-- a
-
-#### Explications
-a
+On utilise un tableau de lettres afin de faire correspondre une lettre à son numéro.
 
 ### 3.5 :Prise en compte des jetons qui "touchent le mot transversalement"
 
@@ -59,7 +41,7 @@ a
 - Plateau
 - Scrabble
 
-#### Explications
+#### Explication
 On vérifie à l'aide du Dico si les mots transversaux formés sont correctes, et on calcule ensuite les points rapportés 
 par ceux-ci.
 
@@ -71,19 +53,3 @@ par ceux-ci.
 #### Explications
 On crée une liste de cases spéciales, on et ajoute ces cases petit à petit au plateau en transformant les cases 
 spéciales par symétrie.
-
-### 3.7 : Version IA
-
-#### classes modifiées et/ou créées
-- a
-
-#### Explications
-a
-
-### 3.8 : Interface graphique
-
-#### classes modifiées et/ou créées
-- a
-
-#### Explications
-a
