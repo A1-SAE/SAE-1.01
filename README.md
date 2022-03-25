@@ -1,7 +1,6 @@
 # SAE 1.01 : scrabble
 
 ## Présentation du projet
-bla bla bla java orienté objet, SAÉ, travail de groupe, entrainement
 Ce projet s'inscrit au sein d'un SAÉ, c'est-à-dire un projet de groupe évalué faisant partie du programme de 
 BUT informatique. Durant ce projet nous étions 2 à travailler en parallèle, pour ce faire nous avons utilisé 
 l'outil <a href="https://github.com/Rafiki13/SAE-1.01">Github</a>.<br/>
